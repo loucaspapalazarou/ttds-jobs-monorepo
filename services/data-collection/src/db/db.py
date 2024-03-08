@@ -7,8 +7,8 @@ import logging
 REDIS_CONNECTION_CONFIG = {
     "host": CONSTANTS["REDIS_HOST"],
     "port": CONSTANTS["REDIS_PORT"],
+    "password": CONSTANTS["REDIS_PASSWORD"],
     "db": 0,
-    #'password': os.getenv('REDIS_PASSWORD'),
     "decode_responses": True,
 }
 
@@ -81,11 +81,9 @@ def insert(data_tuple):
         cur.execute(insert_statement, data_tuple)
         connection.commit()
         job_id = cur.fetchone()[0]
-        # print(job_id)
         logging.debug(job_id)
         return job_id
     except Exception as e:
-        # print(f"Error: {e}")
         logging.error(f"Error: {e}")
         connection.rollback()
         return None
@@ -144,7 +142,7 @@ def remove_old_entries():
 
     cur.execute(
         f"""
-        DELETE FROM jobs WHERE WHERE id::text = ANY(%s)';    
+        DELETE FROM jobs WHERE id::text = ANY(%s);    
         """,
         (ids_to_remove,),
     )

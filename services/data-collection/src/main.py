@@ -65,18 +65,6 @@ def _main():
     process_jobscraper = multiprocessing.Process(target=run_jobscraper)
     process_europascraper = multiprocessing.Process(target=run_europascraper)
 
-    # Define a signal handler for SIGINT (Ctrl+C)
-    def signal_handler(sig, frame):
-        logging.info("Received Ctrl+C. Terminating processes...")
-        process_jobscraper.terminate()
-        process_europascraper.terminate()
-        process_jobscraper.join()
-        process_europascraper.join()
-        logging.info("Processes terminated.")
-        exit(0)
-
-    signal.signal(signal.SIGINT, signal_handler)
-
     process_jobscraper.start()
     process_europascraper.start()
 

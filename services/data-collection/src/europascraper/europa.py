@@ -131,7 +131,7 @@ def fetch_jobs(page_num: int, locationCodes: list[str] = []) -> dict:
             "minNumberPost": None,
         }
     )
-    response = session.post(url, headers=headers, data=payload, timeout=10)
+    response = session.post(url, headers=headers, data=payload)
     data = json.loads(response.text)
     if "jvs" in data and data["jvs"] and len(data["jvs"]) > 0:
         return data["jvs"]

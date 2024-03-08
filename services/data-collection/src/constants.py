@@ -10,8 +10,8 @@ CONSTANTS = {
     "postgres_db": os.getenv("PG_DB_NAME"),
     "REDIS_HOST": os.getenv("REDIS_HOST"),
     "REDIS_PORT": int(os.getenv("REDIS_PORT")),
+    "REDIS_PASSWORD": os.getenv("REDIS_PASSWORD"),
     "TOKENIZATION_REGEX": os.getenv("TOKENIZATION_REGEX"),
-    #'password': os.getenv('REDIS_PASSWORD'),
     "decode_responses": True,
     "scrape_duration": 14_400,  # 14,400 seconds = 4 hours
     "scrape_time": "00:00",
