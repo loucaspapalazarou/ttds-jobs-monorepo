@@ -10,6 +10,7 @@ const suggestions = ref([]);
 const store = useSearchStore()
 const suggestStore=useSuggestStore()
 query.value = route.params.query ?? ''
+const isInputFocused = ref(false) // Add this line
 
 const selectSuggestion = (suggestion) => {
   query.value = suggestion;
@@ -46,8 +47,11 @@ let suggest = () => {
                     border-slate-300 p-3"
                    v-model="query"
                    @keydown.enter="search"
-                   @input="suggest">
-            <ul class="suggestions-list">
+                   @input="suggest"
+                   @focus="isInputFocused = true"  
+                   @blur="isInputFocused = false"
+                   >
+            <ul class="suggestions-list" v-if="isInputFocused">
                 <li v-for="(suggestion, index) in suggestStore.get_results" :key="index"  class="suggestion-item rounded-lg border w-4/4 h-8" @click="selectSuggestion(suggestion)">
                     {{ suggestion }}
                 </li>
