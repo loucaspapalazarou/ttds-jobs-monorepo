@@ -1,0 +1,8 @@
+.idea/
+.venv/
+services/frontend/node_modules
+__pycache__
+data/
+
+.env
+.DS_Store
