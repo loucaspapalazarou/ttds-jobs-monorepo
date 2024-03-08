@@ -56,7 +56,8 @@ services:
   data_collection:
       restart: always
       build: ./services/data-collection
-      depends_on: postgres
+      depends_on:
+        - postgres
   
   # data collection
   
