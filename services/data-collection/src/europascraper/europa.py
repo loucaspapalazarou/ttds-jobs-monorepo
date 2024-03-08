@@ -13,7 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from db import db
 from indexer.indexer import update_remote_index_individual
 import re
-
+import logging
 
 RESULTS_PER_PAGE = 50
 MAX_PAGES = 200
@@ -51,7 +51,7 @@ LOCATION_CODES = [
     "si",
     "sk",
 ]
-INDEX_BATCH_SIZE=1000
+INDEX_BATCH_SIZE = 1000
 
 
 def preprocess_text(value: str):
@@ -189,20 +189,22 @@ def store_jobs(jobs: dict):
     """
     if not jobs:
         return
-    jobs_tuples=[]
+    jobs_tuples = []
     for job in jobs:
         data_tuple = job_to_tuple(job)
         jobs_tuples.append(data_tuple)
-        id=db.insert(data_tuple)
+        id = db.insert(data_tuple)
         if id:
             update_remote_index_individual(data_tuple, id)
-        if (len(jobs_tuples)==INDEX_BATCH_SIZE):
-            #update_remote_index(jobs_tuples)
+        if len(jobs_tuples) == INDEX_BATCH_SIZE:
+            # update_remote_index(jobs_tuples)
             jobs_tuples.clear()
-        #print(data_tuple, "\n")
-        print("STORING")
-    #update_remote_index(jobs_tuples)
+        # print(data_tuple, "\n")
+        logging.debug("STORING")
+        # print()
+    # update_remote_index(jobs_tuples)
     del jobs_tuples
+
 
 def run():
     """
@@ -211,7 +213,7 @@ def run():
     cancel_event = threading.Event()
 
     def signal_handler(sig, frame):
-        print("Ctrl+C pressed. Cancelling execution.")
+        logging.debug("Ctrl+C pressed. Cancelling execution.")
         cancel_event.set()
 
     signal.signal(signal.SIGINT, signal_handler)

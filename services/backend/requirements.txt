@@ -24,3 +24,7 @@ language_data==1.1
 redis>=5.0.2
 python-dotenv>=1.0.1
 numpy>=1.26.4
+schedule>=1.2.1
+pyspellchecker>=0.8.1
+autocorrect>=2.6.1
+textblob==0.18.0.post0

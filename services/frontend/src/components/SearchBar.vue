@@ -2,14 +2,21 @@
 import {ref} from 'vue'
 import router from "@/router/index.js";
 import {useRoute} from 'vue-router';
-import {useSearchStore} from "@/stores/searchStore.js";
+import {useSearchStore, useSuggestStore} from "@/stores/searchStore.js";
 
 const route = useRoute()
 const query = ref({})
-
+const suggestions = ref([]);
 const store = useSearchStore()
-
+const suggestStore=useSuggestStore()
 query.value = route.params.query ?? ''
+
+const selectSuggestion = (suggestion) => {
+  query.value = suggestion;
+  search();
+  // Optionally, you might want to clear the suggestions after selection or take other actions
+  //suggestStore.results.value = []; // Clear suggestions if you store them in `results`
+};
 
 let search = () => {
     if (query.value != null && query.value !== "") {
@@ -18,6 +25,12 @@ let search = () => {
             params: {query: query.value}
         })
         store.search(query.value)
+    }
+}
+
+let suggest = () => {
+    if (query.value != null && query.value !== "") {
+        suggestStore.suggest(query.value)
     }
 }
 
@@ -32,11 +45,43 @@ let search = () => {
                    class="h-full w-full focus:outline-accent-600 rounded-lg border
                     border-slate-300 p-3"
                    v-model="query"
-                   @keydown.enter="search">
+                   @keydown.enter="search"
+                   @input="suggest">
+            <ul class="suggestions-list">
+                <li v-for="(suggestion, index) in suggestStore.get_results" :key="index"  class="suggestion-item rounded-lg border w-4/4 h-8" @click="selectSuggestion(suggestion)">
+                    {{ suggestion }}
+                </li>
+            </ul>
         </div>
     </div>
 </template>
 
+
 <style scoped>
+
+.suggestions-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background-color: white;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  overflow:hidden;
+  width: 100%; /* Match the input box width */
+}
+
+.suggestion-item {
+  padding: 8px;
+  cursor: pointer;
+  color: #007bff; 
+  #float:left
+}
+
+.suggestion-item:hover {
+  background-color: #f0f0f0; /* Light grey background on hover */
+  
+}
 
 </style>

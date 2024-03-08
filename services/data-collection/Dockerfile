@@ -18,5 +18,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 WORKDIR /usr/src/app/
 
-# CMD ["python", "main.py"]
+# CMD ["python", "src/main.py"]
 CMD ["python", "src/main.py", "-s"]

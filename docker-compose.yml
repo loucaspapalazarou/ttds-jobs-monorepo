@@ -54,6 +54,8 @@ services:
         - backend
     
   data_collection:
+      env_file:
+        - .env
       restart: always
       build: ./services/data-collection
       depends_on:

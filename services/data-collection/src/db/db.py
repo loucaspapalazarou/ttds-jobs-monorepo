@@ -2,14 +2,16 @@ import psycopg2
 from constants import CONSTANTS
 import redis
 from indexer.preprocessing import preprocess
+import logging
 
 REDIS_CONNECTION_CONFIG = {
-    'host': CONSTANTS['REDIS_HOST'],
-    'port': CONSTANTS['REDIS_PORT'],
-    'db':0,
+    "host": CONSTANTS["REDIS_HOST"],
+    "port": CONSTANTS["REDIS_PORT"],
+    "db": 0,
     #'password': os.getenv('REDIS_PASSWORD'),
-    'decode_responses': True,
+    "decode_responses": True,
 }
+
 
 def _create_db_connection():
     """
@@ -23,8 +25,6 @@ def _create_db_connection():
         password=CONSTANTS["postgres_password"],
         dbname=CONSTANTS["postgres_db"],
     )
-   
- 
 
 
 def init_database():
@@ -81,28 +81,35 @@ def insert(data_tuple):
         cur.execute(insert_statement, data_tuple)
         connection.commit()
         job_id = cur.fetchone()[0]
-        print(job_id)
+        # print(job_id)
+        logging.debug(job_id)
         return job_id
     except Exception as e:
-        print(f"Error: {e}")
+        # print(f"Error: {e}")
+        logging.error(f"Error: {e}")
         connection.rollback()
         return None
     finally:
         cur.close()
         connection.close()
 
+
 def remove_entries_from_docs(documents, doc_ids_to_remove):
     # Create a pipeline
     with redis.Redis(**REDIS_CONNECTION_CONFIG) as rd_connection:
         pipe = rd_connection.pipeline()
-        
+
         # Iterate over each document in the list of documents
         for doc in documents:
-            preprocessed_doc=preprocess(doc[0])
-            for token in preprocessed_doc:                # Stack the hdel operation for the preprocessed token and the doc_ids to remove
+            preprocessed_doc = preprocess(doc[0])
+            for (
+                token
+            ) in (
+                preprocessed_doc
+            ):  # Stack the hdel operation for the preprocessed token and the doc_ids to remove
                 # *doc_ids_to_remove unpacks the list of doc_ids into separate arguments for hdel
                 pipe.hdel(token, *doc_ids_to_remove)
-        
+
         # Execute all stacked operations in the pipeline at once
         results = pipe.execute()
         return True
@@ -123,35 +130,38 @@ def remove_old_entries():
         SELECT json_agg(ID::text) FROM jobs WHERE timestamp < NOW() - INTERVAL '{CONSTANTS["deletion_interval"]}';    
         """
     )
-    ids_to_remove=cur.fetchone()[0]
+    ids_to_remove = cur.fetchone()[0]
     cur.execute(
         f"""
     SELECT CONCAT_WS(' ', title, company, location, description) AS concatenated_string
     FROM jobs
     WHERE id::text = ANY(%s);
-    """
-    , (ids_to_remove,))
-    documents_to_remove=cur.fetchall()
+    """,
+        (ids_to_remove,),
+    )
+    documents_to_remove = cur.fetchall()
     remove_entries_from_docs(documents_to_remove, ids_to_remove)
 
     cur.execute(
         f"""
         DELETE FROM jobs WHERE WHERE id::text = ANY(%s)';    
-        """
-    , (ids_to_remove,))
+        """,
+        (ids_to_remove,),
+    )
     connection.commit()
     cur.close()
     connection.close()
 
+
 if __name__ == "__main__":
     init_database()
     job_data_tuple = (
-        'job-1',
-    'https://example.com/job1',  # link
-    'Software Developer',        # title
-    'Example Company',           # company
-    '2023-03-01',                # date_posted
-    'New York, NY',              # location
-    'This is a description  description of the job.'  # description
-)
+        "job-1",
+        "https://example.com/job1",  # link
+        "Software Developer",  # title
+        "Example Company",  # company
+        "2023-03-01",  # date_posted
+        "New York, NY",  # location
+        "This is a description  description of the job.",  # description
+    )
     insert(job_data_tuple)
