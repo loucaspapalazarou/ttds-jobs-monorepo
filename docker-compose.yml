@@ -44,9 +44,7 @@ services:
 
   frontend:
       restart: always
-      build:
-        context: ./services/frontend
-        dockerfile: prod.Dockerfile
+      build: ./services/frontend
       volumes:
         - './services/frontend:/app'
         - '/app/node_modules'

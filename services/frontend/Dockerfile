@@ -12,6 +12,4 @@ COPY package.json .
 COPY package-lock.json .
 RUN npm install
 
-EXPOSE ${PORT}
-
 CMD ["npm", "run", "dev"]
