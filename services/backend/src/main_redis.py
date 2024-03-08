@@ -663,6 +663,9 @@ async def route_query(query: str):
     return [weighted_spell_check_query(query)]
     # return suggestions
 
+@app.get("/results/size")
+async def get_results_size():
+    return len(CURRENT_RESULT)
 
 # CURRENT RESULT IS DESIGNED FOR PAGINATION, then establishing a page size is easey to keep track of the page and retrieve the actual docs
 @app.get("/search/")
