@@ -53,6 +53,7 @@ onUnmounted(() => {
 
 watch(() => route.params.query, (newQuery) => {
   if (newQuery) {
+    console.log("New query:", newQuery);
     store.search(newQuery);
   }
 }, { immediate: true });
