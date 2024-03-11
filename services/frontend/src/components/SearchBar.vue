@@ -11,9 +11,15 @@ const store = useSearchStore()
 const suggestStore=useSuggestStore()
 query.value = route.params.query ?? ''
 const isInputFocused = ref(false) // Add this line
+const isMouseOverSuggestions = ref(false);
+const onBlur = () => {
+   if (!isMouseOverSuggestions.value) {
+    isInputFocused.value = false;
+  }
+};
 
 const selectSuggestion = (suggestion) => {
-  query.value = suggestion;
+  query.value = suggestion;  
   search();
   // Optionally, you might want to clear the suggestions after selection or take other actions
   //suggestStore.results.value = []; // Clear suggestions if you store them in `results`
@@ -51,7 +57,8 @@ let suggest = () => {
                    @focus="isInputFocused = true"  
                    @blur="isInputFocused = false"
                    >
-            <ul class="suggestions-list" v-if="isInputFocused">
+            <ul class="suggestions-list" v-if="isInputFocused" @mouseenter="isMouseOverSuggestions = true"
+            @mouseleave="isMouseOverSuggestions = false">>
                 <li v-for="(suggestion, index) in suggestStore.get_results" :key="index"  class="suggestion-item rounded-lg border w-4/4 h-8" @click="selectSuggestion(suggestion)">
                     {{ suggestion }}
                 </li>
