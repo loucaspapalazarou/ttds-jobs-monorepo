@@ -32,6 +32,7 @@ import random
 import json
 import logging
 from http.client import HTTPException
+from pydantic import BaseModel
 
 current_script_dir = os.path.dirname(os.path.abspath(__file__))
 grandparent_dir = os.path.dirname(os.path.dirname(current_script_dir))
@@ -442,7 +443,9 @@ def perform_phrase_search(query):
     final_doc_ids = set()
     if len(postings) > 1:
         for doc_id in common_doc_ids:
-            positions = [np.array(posting[doc_id].split(","), dtype=int) for posting in postings]
+            positions = [
+                np.array(posting[doc_id].split(","), dtype=int) for posting in postings
+            ]
             combinations = list(
                 itertools.product(*positions)
             )  # calculate all combinations of positions of different tokens in a doc
@@ -472,7 +475,9 @@ def perform_proximity_search(tokens, PROX):
     final_doc_ids = set()
     if len(postings) > 1:
         for doc_id in common_doc_ids:
-            positions = [np.array(posting[doc_id].split(","), dtype=int) for posting in postings]
+            positions = [
+                np.array(posting[doc_id].split(","), dtype=int) for posting in postings
+            ]
             combinations = list(
                 itertools.product(*positions)
             )  # calculate all combinations of positions of different tokens in a doc
@@ -658,9 +663,11 @@ async def route_query(query: str):
     return [weighted_spell_check_query(query)]
     # return suggestions
 
+
 @app.get("/results/size")
 async def get_results_size():
     return len(CURRENT_RESULT)
+
 
 # CURRENT RESULT IS DESIGNED FOR PAGINATION, then establishing a page size is easey to keep track of the page and retrieve the actual docs
 @app.get("/search/")
@@ -755,33 +762,55 @@ thread.start()
 
 app.include_router(api_router)
 
+
 class FeedbackData(BaseModel):
     rating: int
     feedback: str
     email: str
     date: str
 
-def save_feedback_to_json(feedback_data):
-    json_file_path = "feedback_data.json"  # Adjust the file path as needed
+
+# Define the function to save feedback data to the PostgreSQL database
+async def save_feedback_to_database(feedback_data: FeedbackData):
+    insert_statement = """
+    INSERT INTO feedback (rating, feedback, email, date)
+    VALUES (%s, %s, %s, %s);
+    """
+
+    data_tuple = (
+        feedback_data.rating,
+        feedback_data.feedback,
+        feedback_data.email,
+        feedback_data.date,
+    )
 
     try:
-        with open(json_file_path, "a") as json_file:
-            json.dump(feedback_data.dict(), json_file)
-            json_file.write("\n")  # Add a newline for each entry
+        cur = connection.cursor()
+        cur.execute(insert_statement, data_tuple)
+        connection.commit()
     except Exception as e:
-        logging.error(f"Error saving feedback to JSON: {str(e)}")
+        logging.error(f"Error: {e}")
+        connection.rollback()
+        return None
+    finally:
+        cur.close()
 
+
+# Define the endpoint to submit feedback
 @app.post("/submitfeedback/")
 async def submit_feedback(feedback_data: FeedbackData):
     try:
-        # Save feedback data to the JSON file
-        save_feedback_to_json(feedback_data)
+        # Save feedback data to the PostgreSQL database
+        await save_feedback_to_database(feedback_data)
 
-        return {"message": f"Feedback submitted successfully. Rating: {feedback_data.rating},{feedback_data.feedback},{feedback_data.email},{feedback_data.date}"}
+        return {
+            "message": f"Feedback submitted successfully. Rating: {feedback_data.rating}, Feedback: {feedback_data.feedback}, Email: {feedback_data.email}, Date: {feedback_data.date}"
+        }
     except Exception as e:
         # Handle exceptions, log errors, and return appropriate response
         logging.error(f"Error submitting feedback: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8006, log_level="debug")

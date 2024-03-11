@@ -61,7 +61,7 @@ services:
         context: ./services/data-collection
         dockerfile: Dockerfile.data_collection
       depends_on:
-        - postgres
+        - redis
   
   # data collection
   

@@ -9,3 +9,11 @@ CREATE TABLE IF NOT EXISTS jobs (
     description TEXT,
     timestamp TIMESTAMP DEFAULT current_timestamp
 );
+
+CREATE TABLE feedback (
+    id SERIAL PRIMARY KEY,
+    rating INT NOT NULL,
+    feedback TEXT NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    date TIMESTAMP NOT NULL
+);
