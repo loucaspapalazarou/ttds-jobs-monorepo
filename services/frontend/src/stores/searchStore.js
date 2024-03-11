@@ -37,6 +37,7 @@ export const useSuggestStore = defineStore( 'suggest' ,
 
             watch(query, async () => {
                 results.value = null
+                const hostname = window.location.hostname;
                 fetch(`http://${hostname}:5001/suggest/?query=${encodeURIComponent(query.value)}`)
                     .then(response => response.json())
                     .then(data => results.value = data);
