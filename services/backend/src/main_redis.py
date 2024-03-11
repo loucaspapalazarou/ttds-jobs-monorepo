@@ -324,7 +324,7 @@ def update_database_info():
 app = FastAPI(title="Gateway", openapi_url="/openapi.json")
 
 api_router = APIRouter()
-origins = ["http://localhost:8000"]
+origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

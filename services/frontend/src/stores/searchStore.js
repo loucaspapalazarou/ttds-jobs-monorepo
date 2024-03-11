@@ -14,11 +14,12 @@ export const useSearchStore = defineStore(
         }
 
         watch(query, async () => {
-            results.value = null
-            fetch('http://localhost:5001/search/?query=' + query.value)
-                .then(response => response.json())
-                .then(data => results.value = data);
-        })
+            results.value = null;
+            const hostname = window.location.hostname;
+            fetch(`http://${hostname}:5001/search/?query=${encodeURIComponent(query.value)}`)
+              .then((response) => response.json())
+              .then((data) => (results.value = data));
+          });
 
         return {query, get_query, get_results, search}
     })
@@ -36,7 +37,7 @@ export const useSuggestStore = defineStore( 'suggest' ,
 
             watch(query, async () => {
                 results.value = null
-                fetch('http://localhost:5001/suggest/?query=' + query.value)
+                fetch(`http://${hostname}:5001/suggest/?query=${encodeURIComponent(query.value)}`)
                     .then(response => response.json())
                     .then(data => results.value = data);
             })
