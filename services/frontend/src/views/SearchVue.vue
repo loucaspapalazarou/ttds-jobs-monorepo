@@ -51,8 +51,11 @@ onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll);
 });
 
-
-store.search(route.params.query);
+watch(() => route.params.query, (newQuery) => {
+  if (newQuery) {
+    store.search(newQuery);
+  }
+}, { immediate: true });
 </script>
 
 <template>
