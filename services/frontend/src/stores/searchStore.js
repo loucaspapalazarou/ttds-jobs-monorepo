@@ -54,7 +54,9 @@ export const useSearchStore = defineStore(
             isLoading: computed(() => isLoading.value),
             isAllDataLoaded: computed(() => isAllDataLoaded.value),
             search,
-            fetchMore};
+            fetchMore,
+            get_query,
+            get_results};
 });
 
 

@@ -58,7 +58,6 @@ watch(() => route.params.query, (newQuery) => {
   }
 }, { immediate: true });
 
-store.search(route.params.query);
 
 </script>
 
