@@ -1,5 +1,5 @@
 <script setup>
-import { computed,  onMounted, onUnmounted,ref} from 'vue';
+import { computed,  onMounted, onUnmounted,ref, watch} from 'vue';
 import { useRoute } from "vue-router";
 
 import SearchBar from "@/components/SearchBar.vue";
