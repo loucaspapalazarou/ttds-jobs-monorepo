@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed,  onMounted, onUnmounted,ref} from 'vue';
 import { useRoute } from "vue-router";
 
 import SearchBar from "@/components/SearchBar.vue";
@@ -45,6 +45,10 @@ const handleScroll = async () => {
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
   //loadMoreData(); // Initial data load
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
 });
 
 
