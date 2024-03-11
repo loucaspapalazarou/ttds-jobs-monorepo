@@ -35,6 +35,19 @@ const downloadResults = () => {
   URL.revokeObjectURL(resulturl);
 };
 
+const handleScroll = async () => {
+  const bottomOfPage = window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
+  if (bottomOfPage && !store.isLoading && !store.isAllDataLoaded.value) {
+    await store.fetchMore();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+  //loadMoreData(); // Initial data load
+});
+
+
 store.search(route.params.query);
 </script>
 
