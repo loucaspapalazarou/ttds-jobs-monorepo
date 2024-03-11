@@ -740,7 +740,7 @@ async def retrieve_jobs(page: int, number_per_page: int):
     return documents_fetched
 
 @app.get("/jobs/")
-async def retrieve_jobs_back(page: int = Query(1, alias="page"), number_per_page: int = Query(30, alias="page")):
+async def retrieve_jobs_back(page: int = Query(1, alias="page"), number_per_page: int = Query(30, alias="number-per-page")):
     return retrieve_jobs(page, number_per_page)
 
 schedule.every().day.at("06:00").do(update_database_info)
