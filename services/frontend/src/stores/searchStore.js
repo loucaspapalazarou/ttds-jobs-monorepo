@@ -37,7 +37,7 @@ export const useSearchStore = defineStore(
             currentPage.value++; // Increment the page for pagination in the jobs endpoint
     
             const hostname = window.location.hostname;
-            fetch(`http://${hostname}:5001/jobs/page=${currentPage.value}`)
+            fetch(`http://${hostname}:5001/jobs/?page=${currentPage.value}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.length === 0) {
