@@ -41,7 +41,8 @@ export default {
       rating: 0,
       feedback: "",
       email: "",
-      isSubmitting: false,  // Add a loading state
+      isSubmitting: false,
+      showThankYou: false, // Add a loading state
     };
   },
   methods: {
