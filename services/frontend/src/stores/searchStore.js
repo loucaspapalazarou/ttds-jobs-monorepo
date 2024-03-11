@@ -10,7 +10,7 @@ export const useSearchStore = defineStore(
         const currentPage = ref(0);
         const isLoading = ref(false);
         const isAllDataLoaded = ref(false);
-        const get_results = computed(() => results.value)
+        const get_results = computed(() => results.value);
 
         const search = (q) => {
             query.value = q;
@@ -29,7 +29,7 @@ export const useSearchStore = defineStore(
                     results.value = data;
                 }
             }).finally(() => isLoading.value = false);
-          }
+          };
           const fetchMore = () => {
             if (isLoading.value || isAllDataLoaded.value) return;
             
@@ -47,6 +47,7 @@ export const useSearchStore = defineStore(
                     }
                 }
                 ).finally(() => isLoading.value = false);
+          }
 
         return {query,
             results: computed(() => results.value),
@@ -54,7 +55,6 @@ export const useSearchStore = defineStore(
             isAllDataLoaded: computed(() => isAllDataLoaded.value),
             search,
             fetchMore};
-    }
 });
 
 
