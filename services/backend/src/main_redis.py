@@ -29,6 +29,9 @@ from autocorrect import Speller
 from textblob import TextBlob
 from collections import Counter
 import random
+import json
+import logging
+from http.client import HTTPException
 
 current_script_dir = os.path.dirname(os.path.abspath(__file__))
 grandparent_dir = os.path.dirname(os.path.dirname(current_script_dir))
@@ -751,6 +754,34 @@ thread.daemon = True
 thread.start()
 
 app.include_router(api_router)
+
+class FeedbackData(BaseModel):
+    rating: int
+    feedback: str
+    email: str
+    date: str
+
+def save_feedback_to_json(feedback_data):
+    json_file_path = "feedback_data.json"  # Adjust the file path as needed
+
+    try:
+        with open(json_file_path, "a") as json_file:
+            json.dump(feedback_data.dict(), json_file)
+            json_file.write("\n")  # Add a newline for each entry
+    except Exception as e:
+        logging.error(f"Error saving feedback to JSON: {str(e)}")
+
+@app.post("/submitfeedback/")
+async def submit_feedback(feedback_data: FeedbackData):
+    try:
+        # Save feedback data to the JSON file
+        save_feedback_to_json(feedback_data)
+
+        return {"message": f"Feedback submitted successfully. Rating: {feedback_data.rating},{feedback_data.feedback},{feedback_data.email},{feedback_data.date}"}
+    except Exception as e:
+        # Handle exceptions, log errors, and return appropriate response
+        logging.error(f"Error submitting feedback: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8006, log_level="debug")
