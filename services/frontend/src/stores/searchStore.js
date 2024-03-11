@@ -1,43 +1,53 @@
-import { defineStore } from 'pinia';
-import { computed, ref, watch } from 'vue';
+import {defineStore} from 'pinia'
+import {computed, ref, watch} from "vue";
 
-export const useSearchStore = defineStore('search', () => {
-  const query = ref('');
-  const results = ref(null);
-  const get_query = computed(() => query.value);
-  const get_results = computed(() => results.value);
+export const useSearchStore = defineStore(
+    'search',
+    () => {
+        const query = ref('');
+        const results = ref(null);
+        const get_query = computed(() => query.value);
+        const get_results = computed(() => results.value)
 
-  let search = (q) => {
-    query.value = q;
-  };
+        let search = (q) => {
+            query.value = q
+        }
 
-  watch(query, async () => {
-    results.value = null;
-    const hostname = window.location.hostname;
-    fetch(`http://${hostname}:5001/search/?query=${query.value}`)
-      .then((response) => response.json())
-      .then((data) => (results.value = data));
-  });
+        watch(query, async () => {
+            results.value = null
+            
+            fetch('http://localhost:5001/search/?query=' + query.value,{
+                method:'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    // Additional headers here if needed
+                }
+            })
+                .then(response => response.json())
+                .then(data => results.value = data);
+        })
 
-  return { query, get_query, get_results, search };
-});
+        return {query, get_query, get_results, search}
+    })
 
-export const useSuggestStore = defineStore('suggest', () => {
-  const query = ref('');
-  const results = ref(null);
-  const get_query = computed(() => query.value);
-  const get_results = computed(() => results.value);
-  let suggest = (q) => {
-    query.value = q;
-  };
 
-  watch(query, async () => {
-    results.value = null;
-    const hostname = window.location.hostname;
-    fetch(`http://${hostname}:5001/suggest/?query=${query.value}`)
-      .then((response) => response.json())
-      .then((data) => (results.value = data));
-  });
+export const useSuggestStore = defineStore( 'suggest' ,
+        ()=> {
+            const query = ref('');
+            const results = ref(null);
+            const get_query = computed(() => query.value);
+            const get_results = computed(() => results.value)    
+            let  suggest = (q)=> { 
+                query.value = q
+            }
 
-  return { query, get_query, get_results, suggest };
-});
+            watch(query, async () => {
+                results.value = null
+                fetch('http://localhost:5001/suggest/?query=' + query.value)
+                    .then(response => response.json())
+                    .then(data => results.value = data);
+            })
+            // Replace `yourServerApiEndpoint` with the actual endpoint
+            return {query, get_query, get_results, suggest}
+        }
+)
