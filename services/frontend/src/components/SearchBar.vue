@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
 import router from "@/router/index.js";
 import {useRoute} from 'vue-router';
 import {useSearchStore, useSuggestStore} from "@/stores/searchStore.js";
