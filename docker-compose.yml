@@ -42,25 +42,27 @@ services:
       - redis
 
   frontend:
-      restart: always
-      build: ./services/frontend
-      volumes:
-        - './services/frontend:/app'
-        - '/app/node_modules'
-      ports:
-        - 8000:8000
-      depends_on:
-        - backend
-    
+    restart: always
+    build: ./services/frontend
+    volumes:
+      - './services/frontend:/app'
+      - '/app/node_modules'
+    ports:
+      - 8000:8000
+    depends_on:
+      - backend
+    links:
+      - backend
+
   data_collection:
-      env_file:
-        - .env
-      restart: always
-      build: ./services/data-collection
-      depends_on:
-        - postgres
+    env_file:
+      - .env
+    restart: always
+    build: ./services/data-collection
+    depends_on:
+      - postgres
   
   # data collection
-  
+
 volumes:
   postgres_data:

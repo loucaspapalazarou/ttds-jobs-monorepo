@@ -10,6 +10,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from threading import Thread
 
+from .utils.constants import RESULTS_PAGE_SIZE
 from .config.pg_config import Database
 from .utils.thesaurus import job_posting_thesaurus
 from .utils.dateparser import parse_date
@@ -90,19 +91,34 @@ async def do_search(query: str, request: Request, page: int = 1):
     _start_time = time.time()
     if page < 1:
         raise HTTPException(status_code=400, detail='Page value must be equal or greater than 1.')
+    response = None
     try:
         results, total_results = await search(query, request, page=page)
-        return {
-            'processing': time.time() - _start_time,
+        response = {
             'data': {
                 "query": query,
-                "results": [{k: v for k, v in x.items()} for x in results],
-                "total_reslts": total_results
+                "results": [{k: v for k, v in x.items()} for x in
+                            results] if total_results > (page * RESULTS_PAGE_SIZE) - RESULTS_PAGE_SIZE else [],
+                "total_results": total_results
             }
         }
     except Exception as e:  # General / Unknown error
         logger.exception(e)
-        raise HTTPException(status_code=500, detail={'query': query, 'message': f'Internal server error.'})
+        if response:
+            raise HTTPException(status_code=500, detail=response)
+        else:
+            raise HTTPException(status_code=500, detail={
+                'query': query,
+                'message': f'Internal server error.'
+            })
+
+    if total_results > 0:
+        return response
+    else:
+        raise HTTPException(status_code=404, detail={
+            'query': query,
+            'message': f'No results found for {query}.'
+        })
 
 
 @app.get("/suggest/")
