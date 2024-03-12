@@ -35,8 +35,13 @@ let search = () => {
     }
 }
 
+watch(query, (newValue, oldValue) => {
+        // Fetch new suggestions only if the query actually changes to a non-empty value
+        suggest();
+});
+
 let suggest = () => {
-    if (query.value != null && query.value !== "") {
+    if (query.value != null) {
         suggestStore.suggest(query.value)
     }
 }
@@ -53,7 +58,6 @@ let suggest = () => {
                     border-slate-300 p-3"
                    v-model="query"
                    @keydown.enter="search"
-                   @input="suggest"
                    @focus="isInputFocused = true"  
                    @blur="onBlur"
                    >
