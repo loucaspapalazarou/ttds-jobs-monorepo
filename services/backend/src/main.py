@@ -127,10 +127,10 @@ async def route_query(query: str):
 
 
 @app.post("/submit_feedback/")
-async def submit_feedback(feedback_data: FeedbackData):
+async def submit_feedback(feedback_data: FeedbackData, request: Request):
     try:
         # Save feedback data to the PostgreSQL database
-        await save_feedback_to_database(feedback_data)
+        await save_feedback_to_database(feedback_data, request)
 
         return {"message": "Feedback submitted successfully."}
     except Exception as e:

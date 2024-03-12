@@ -130,11 +130,6 @@ watch(() => route.params.query, (newQuery) => {
 </template>
 
 <style scoped>
-.avia-button {
-    font-size: 10px; /* adjust as needed */
-    border-radius: 50px; /* adjust as needed */
-}
-
 .nav-link {
     @apply flex text-slate-400 dark:text-slate-300 hover:underline
 }
