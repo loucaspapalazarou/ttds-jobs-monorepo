@@ -601,7 +601,7 @@ def boolean_search(tokens):
                 elif operator == "OR":
                     current_result |= term_postings
                 elif operator == "NOT":
-                    term_postings = DOC_IDS - term_postings
+                    term_postings = set(DOC_IDS) - term_postings
     return list(current_result)
 
 
