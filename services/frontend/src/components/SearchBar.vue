@@ -55,7 +55,7 @@ let suggest = () => {
                    @keydown.enter="search"
                    @input="suggest"
                    @focus="isInputFocused = true"  
-                   @blur="isInputFocused = false"
+                   @blur="onBlur"
                    >
             <ul class="suggestions-list" v-if="isInputFocused" @mouseenter="isMouseOverSuggestions = true"
             @mouseleave="isMouseOverSuggestions = false">>
