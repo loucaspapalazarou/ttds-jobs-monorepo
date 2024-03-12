@@ -172,6 +172,7 @@ input[type="email"] {
   border-radius: 5px;
   font-size: 25px;
   margin-top: 15px;
+  color: #333;
 }
 
 button {

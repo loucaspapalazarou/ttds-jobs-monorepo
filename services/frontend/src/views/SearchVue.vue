@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed,  onMounted, onUnmounted,ref, watch} from 'vue';
 import { useRoute } from "vue-router";
 
 import SearchBar from "@/components/SearchBar.vue";
@@ -35,7 +35,30 @@ const downloadResults = () => {
   URL.revokeObjectURL(resulturl);
 };
 
-store.search(route.params.query);
+const handleScroll = async () => {
+  const bottomOfPage = window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
+  if (bottomOfPage && !store.isLoading && !store.isAllDataLoaded.value) {
+    await store.fetchMore();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+  //loadMoreData(); // Initial data load
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
+
+watch(() => route.params.query, (newQuery) => {
+  if (newQuery) {
+    console.log("New query:", newQuery);
+    store.search(newQuery);
+  }
+}, { immediate: true });
+
+
 </script>
 
 <template>

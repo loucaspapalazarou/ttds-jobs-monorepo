@@ -443,9 +443,7 @@ def perform_phrase_search(query):
     final_doc_ids = set()
     if len(postings) > 1:
         for doc_id in common_doc_ids:
-            positions = [
-                np.array(posting[doc_id].split(","), dtype=int) for posting in postings
-            ]
+            positions = [np.array(posting[doc_id].split(","), dtype=int) for posting in postings]
             combinations = list(
                 itertools.product(*positions)
             )  # calculate all combinations of positions of different tokens in a doc
@@ -475,9 +473,7 @@ def perform_proximity_search(tokens, PROX):
     final_doc_ids = set()
     if len(postings) > 1:
         for doc_id in common_doc_ids:
-            positions = [
-                np.array(posting[doc_id].split(","), dtype=int) for posting in postings
-            ]
+            positions = [np.array(posting[doc_id].split(","), dtype=int) for posting in postings]
             combinations = list(
                 itertools.product(*positions)
             )  # calculate all combinations of positions of different tokens in a doc
@@ -712,7 +708,7 @@ import json
 
 
 @app.get("/jobs/")
-async def retrieve_jobs(page: int, number_per_page: int):
+async def retrieve_jobs(page: int, number_per_page: int=30):
     global pagination_offset
     start_index = (page - 1) * number_per_page
     end_index = start_index + number_per_page
