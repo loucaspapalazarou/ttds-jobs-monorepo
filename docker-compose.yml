@@ -36,8 +36,8 @@ services:
     ports:
       - 5001:5001
     volumes:
-      - ./services/backend/src:/app
-    command: uvicorn main_redis:app --reload --host 0.0.0.0 --port 5001
+      - ./services/backend/src:/app/backend
+    command: uvicorn backend.main_redis:app --reload --host 0.0.0.0 --port 5001
     depends_on:
       - redis
 
