@@ -78,5 +78,5 @@ job_posting_thesaurus = {
     "chief": ["senior", "lead", "principal", "chief"],
     "CEO": ["executive", "CEO", "CFO", "CTO"],
     "CFO": ["executive", "CEO", "CFO", "CTO"],
-    "CTO": ["executive", "CEO", "CFO", "CTO"]
+    "CTO": ["executive", "CEO", "CFO", "CTO"],
 }

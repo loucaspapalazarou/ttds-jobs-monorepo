@@ -23,4 +23,4 @@ RUN pip3 install -r ./requirements.txt
 
 COPY services/backend/src/ ./backend
 
-CMD exec uvicorn backend.main_redis:app --host 0.0.0.0 --port ${PORT}
+CMD exec uvicorn backend.main:app --host 0.0.0.0 --port ${PORT}

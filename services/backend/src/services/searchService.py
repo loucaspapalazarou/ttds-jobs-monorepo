@@ -39,4 +39,4 @@ async def search(query, request: Request, page: int = 1, size: int = RESULTS_PAG
     results = await request.app.state.db.fetch_rows(
         f'SELECT * FROM jobs WHERE id in ({",".join([str(d) for d in doc_ids[_offset:_offset + size]])})'
     )
-    return results
+    return results, len(doc_ids)

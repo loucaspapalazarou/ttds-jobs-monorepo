@@ -1,4 +1,7 @@
 from dateutil import parser
+from logging import getLogger
+
+logger = getLogger('uvicorn')
 
 
 def parse_date(date_str, current_time, parsed_cache: dict, day_first=True):
@@ -14,5 +17,5 @@ def parse_date(date_str, current_time, parsed_cache: dict, day_first=True):
         parsed_cache[date_str] = date_factor  # Cache the result
         return date_factor
     except ValueError:
-        print(f"Could not parse date: {date_str}")
+        logger.error(f"Could not parse date: {date_str}")
         return None

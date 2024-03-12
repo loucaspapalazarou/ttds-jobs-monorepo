@@ -13,8 +13,11 @@ from threading import Thread
 from .config.pg_config import Database
 from .utils.thesaurus import job_posting_thesaurus
 from .utils.dateparser import parse_date
+from .models.feedbackModel import FeedbackData
 from .services.searchService import search
 from .services.postgresService import get_database_constants
+from .services.spellCheckerService import weighted_spell_check_query
+from .services.feedbackService import save_feedback_to_database
 
 load_dotenv()
 
@@ -38,7 +41,8 @@ async def update_database_info(db: Database = None):
         if db is not None:
             app.state.N, app.state.DOC_IDS, app.state.ID2DATE = await get_database_constants(db, app.state.parsed_cache)
         else:
-            app.state.N, app.state.DOC_IDS, app.state.ID2DATE = await get_database_constants(app.state.db, app.state.parsed_cache)
+            app.state.N, app.state.DOC_IDS, app.state.ID2DATE = await get_database_constants(app.state.db,
+                                                                                             app.state.parsed_cache)
         logger.info(f'Updated database info.')
     except Exception as e:
         logger.exception(e)
@@ -87,17 +91,36 @@ async def do_search(query: str, request: Request, page: int = 1):
     if page < 1:
         raise HTTPException(status_code=400, detail='Page value must be equal or greater than 1.')
     try:
-        results = await search(query, request, page=page)
+        results, total_results = await search(query, request, page=page)
         return {
             'processing': time.time() - _start_time,
-            'data': [
-                query,
-                [{k: v for k, v in x.items()} for x in results]
-            ]
+            'data': {
+                "query": query,
+                "results": [{k: v for k, v in x.items()} for x in results],
+                "total_reslts": total_results
+            }
         }
     except Exception as e:  # General / Unknown error
         logger.exception(e)
         raise HTTPException(status_code=500, detail={'query': query, 'message': f'Internal server error.'})
+
+
+@app.get("/suggest/")
+async def route_query(query: str):
+    return [weighted_spell_check_query(query)]
+
+
+@app.post("/submit_feedback/")
+async def submit_feedback(feedback_data: FeedbackData):
+    try:
+        # Save feedback data to the PostgreSQL database
+        await save_feedback_to_database(feedback_data)
+
+        return {"message": "Feedback submitted successfully."}
+    except Exception as e:
+        # Handle exceptions, log errors, and return appropriate response
+        logging.error(f"Error submitting feedback: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 def run_periodically():
