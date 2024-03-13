@@ -17,13 +17,13 @@ defineProps({
         <p class="text-xl font-extrabold group-hover:underline">
             {{title}}
         </p>
-        <p v-if="placeholder" class="bg-accent-100 w-3/4 h-8"></p>
+        <p v-if="placeholder" class="bg-accent-200 dark:bg-accent-300 w-3/4 h-6"></p>
         <p class="italic">{{company}}</p>
-        <p v-if="placeholder" class="bg-accent-100 w-2/3 h-5"></p>
+        <p v-if="placeholder" class="bg-accent-200 dark:bg-accent-300 w-2/3 h-3"></p>
         <p class="text-slate-600 dark:text-white line-clamp-2">
             {{description}}
         </p>
-        <p v-if="placeholder" class="bg-slate-100 w-full h-12"></p>
+        <p v-if="placeholder" class="bg-slate-200 dark:bg-slate-300 w-full h-9"></p>
         <div v-if="location" class="flex gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor" class="w-6 h-6">
@@ -33,7 +33,7 @@ defineProps({
             </svg>
             <p>{{location}}</p>
         </div>
-        <p v-if="placeholder" class="bg-sky-100 w-1/4 h-5"></p>
+        <p v-if="placeholder" class="bg-accent-200 dark:bg-accent-300 w-1/4 h-3"></p>
     </a>
 </template>
 

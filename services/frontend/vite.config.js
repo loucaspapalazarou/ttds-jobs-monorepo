@@ -16,7 +16,7 @@ export default ({mode}) => {
             port: 8000,
             proxy: {
                 "/api": {
-                    target: process.env.VITE_SEARCH_API_URL,
+                    target: 'http://backend:5001',
                     changeOrigin: true,
                     secure: false,
                     rewrite: (path) => path.replace(/^\/api/, "")

@@ -2,7 +2,6 @@ fastapi==0.89.1
 pymongo==4.3.3
 uvicorn ==0.20.0
 pandas==1.5.2
-fastapi == 0.89.1
 python-multipart == 0.0.5
 pydantic == 1.10.4
 sqlalchemy==1.4.22
@@ -28,3 +27,4 @@ schedule>=1.2.1
 pyspellchecker>=0.8.1
 autocorrect>=2.6.1
 textblob==0.18.0.post0
+asyncpg>=0.29.0

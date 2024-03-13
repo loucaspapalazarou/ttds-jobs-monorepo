@@ -20,7 +20,12 @@ stemmed_languages = ["arabic", "danish", "dutch", "english", "finnish", "french"
                      "hungarian", "italian", "norwegian", "portuguese", "romanian", "russian",
                      "spanish", "swedish"]
 
-BOOLEAN_OPERATORS = ["AND", "OR", "NOT"]
+NOT = 'NOT'
+AND = 'AND'
+OR = 'OR'
+BOOL_OPERATORS = (NOT, AND, OR)
+
+SEPARATOR = ' % '
 
 
 def detect_language(text: str) -> str:
@@ -64,26 +69,26 @@ def preprocess(
     def tokenize(string_to_split: str, regex: str = TOKENIZATION_REGEX) -> list[str]:
         """Apply tokenization to string"""
         split_string = re.split(regex, string_to_split)
-        return [x for x in split_string if x and x != ' ']
+        return [x.lower() for x in split_string if x and x != ' ']
 
-    def case_fold(strings_to_fold: list[str]) -> list[str]:
+    def case_fold(strings_to_fold: list[str], bool_operators: list[str] = BOOL_OPERATORS) -> list[str]:
         """Apply case folding to list of strings"""
         if not boolean:
             return [x.lower() for x in strings_to_fold]
-        return [x.lower() for x in strings_to_fold if x not in BOOLEAN_OPERATORS]
+        return [x.lower() for x in strings_to_fold if x not in bool_operators]
 
-    def filter_stop_words(term_list: list[str], language: str) -> list[str]:
+    def filter_stop_words(term_list: list[str], language: str, bool_operators: list[str] = BOOL_OPERATORS) -> list[str]:
         """Filter stop words in list of strings"""
         if not boolean:
             return [t for t in term_list if t not in stopwords.words(language)]
-        return [t for t in term_list if t not in stopwords.words(language).update(BOOLEAN_OPERATORS)]
+        return [t for t in term_list if t not in stopwords.words(language).extend(bool_operators)]
 
-    def stem_words(term_list: list[str], language: str) -> list[str]:
+    def stem_words(term_list: list[str], language: str, bool_operators: list[str] = BOOL_OPERATORS) -> list[str]:
         """Apply stemming to list of strings"""
         stemmer = SnowballStemmer(language)
         if not boolean:
             return [stemmer.stem(t) for t in term_list]
-        return [token if token in BOOLEAN_OPERATORS else stemmer.stem(token) for token in term_list]
+        return [token if token in bool_operators else stemmer.stem(token) for token in term_list]
 
     lang = detect_language(text)
     terms = case_fold(tokenize(text, tokenization_regex))
@@ -92,3 +97,35 @@ def preprocess(
     if stem and lang in stemmed_languages:
         terms = stem_words(terms, lang)
     return terms
+
+
+def preprocess_query(query: list[str]) -> list[str]:
+    """
+    Apply preprocessing to query.
+
+    Parameters
+    ----------
+    query : list[str]
+        query to be preprocessed (split by spaces).
+
+    Returns
+    -------
+    preprocessed_query : list[str]
+        query after preprocessing is applied.
+    """
+    _query_str = ' ' + ' '.join(query) + ' '
+
+    # Do query preprocessing
+    _terms = ((' ' + _query_str + ' ').replace(' ' + AND + ' ', SEPARATOR).replace(' ' + OR + ' ', SEPARATOR)
+              .replace(' ' + NOT + ' ', SEPARATOR).split(SEPARATOR))  # Remove boolean Keywords
+    _bool_operators = list(filter(lambda x: x in BOOL_OPERATORS, query))  # Get list of bool operators
+    _preprocessed_terms = [' '.join(y) for y in [preprocess(x) for x in _terms]]  # apply preprocessing to query terms
+
+    #   Reintroduce boolean operators into query list
+    _preprocessed_query = []
+    for i, term in enumerate(_preprocessed_terms):
+        _preprocessed_query.append(term)
+        if i < len(_preprocessed_terms) - 1:
+            _preprocessed_query.append(_bool_operators[i])
+
+    return ' '.join(_preprocessed_query).split(' ')  # Return preprocessed query as list of strings
