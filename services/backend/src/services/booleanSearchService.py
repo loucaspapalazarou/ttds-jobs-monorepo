@@ -3,7 +3,7 @@ import numpy as np
 from itertools import product
 from logging import getLogger
 
-from ..utils.preprocessing import preprocess_query
+from ..utils.preprocessing import preprocess
 from .redisService import get_index
 
 logger = getLogger('uvicorn')
@@ -58,7 +58,7 @@ def perform_proximity_search(tokens, proximity_distance):
 
 
 def boolean_search(tokens, doc_ids) -> list:
-    tokens = preprocess_query(tokens.split(' '))
+    tokens = preprocess(tokens)
     current_result = set(doc_ids)
     operators = []
     word_for_phrase = []
