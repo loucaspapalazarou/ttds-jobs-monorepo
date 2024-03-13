@@ -59,7 +59,7 @@ def perform_proximity_search(tokens, proximity_distance):
 
 def boolean_search(tokens, doc_ids) -> list:
     tokens = preprocess(tokens, boolean=True)
-    current_result = set(doc_ids)
+    current_result = set(list(np.array(doc_ids), dtype=int))
     operators = []
     word_for_phrase = []
     phrase = False
