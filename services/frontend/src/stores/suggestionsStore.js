@@ -46,7 +46,14 @@ export const useSuggestStore = defineStore('suggest',
                 }
             }
         })
+
+        let reset = () => {
+            query.value = '';
+            results.value = null;
+            currentAbortController.value = null;
+        }
+
         // Replace `yourServerApiEndpoint` with the actual endpoint
-        return {query, get_query, get_results, suggest}
+        return {query, get_query, get_results, suggest, reset}
     }
 )

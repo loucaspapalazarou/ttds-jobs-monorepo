@@ -20,7 +20,8 @@
                 <label for="feedback" class="mt-4">Please share your opinion with us and which features can we add to
                     improve. We'd
                     love to hear your suggestions.</label>
-                <textarea id="feedback" v-model="feedback" class="text-black p-2"></textarea>
+                <textarea id="feedback" v-model="feedback"
+                          class="text-black p-2 border border-slate-300 dark:border-slate-400"></textarea>
                 <!--                <label for="email">Email (optional)</label>-->
                 <!--                <input id="email" type="email" v-model="email"/>-->
                 <div class="flex justify-end mt-6">
@@ -76,41 +77,41 @@ export default {
             // Set the loading state to true during submission
             this.isSubmitting = true;
 
-  // Send feedback data to the server
-  const hostname = window.location.hostname;
-  console.log(hostname);
-  fetch(`http://${hostname}:5001/submit_feedback`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+            // Send feedback data to the server
+            const hostname = window.location.hostname;
+            console.log(hostname);
+            fetch(`http://${hostname}:5001/submit_feedback`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(feedbackData),
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Server response not ok");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    // Handle the submission response
+                    console.log("Feedback submitted successfully", data);
+                    // Reset the form and loading state
+                    this.rating = 0;
+                    this.feedback = "";
+                    this.email = "";
+                    this.showThankYou = true; // Display thank you message
+                })
+                .catch((error) => {
+                    // Handle submission error
+                    console.error("Error submitting feedback", error);
+                })
+                .finally(() => {
+                    // Set the loading state to false after submission (regardless of success or failure)
+                    this.isSubmitting = false;
+                });
+        },
     },
-    body: JSON.stringify(feedbackData),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Server response not ok");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      // Handle the submission response
-      console.log("Feedback submitted successfully", data);
-      // Reset the form and loading state
-      this.rating = 0;
-      this.feedback = "";
-      this.email = "";
-      this.showThankYou = true; // Display thank you message
-    })
-    .catch((error) => {
-      // Handle submission error
-      console.error("Error submitting feedback", error);
-    })
-    .finally(() => {
-      // Set the loading state to false after submission (regardless of success or failure)
-      this.isSubmitting = false;
-    });
-},
-  },
 };
 </script>
 

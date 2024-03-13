@@ -23,7 +23,7 @@ stemmed_languages = ["arabic", "danish", "dutch", "english", "finnish", "french"
 NOT = 'NOT'
 AND = 'AND'
 OR = 'OR'
-BOOL_OPERATORS = [NOT, AND, OR]
+BOOL_OPERATORS = (NOT, AND, OR)
 
 SEPARATOR = ' % '
 
@@ -84,19 +84,19 @@ def preprocess(
 # Example string to split
        
 
-    def case_fold(strings_to_fold: list[str], bool_operators:list[str]=BOOL_OPERATORS) -> list[str]:
+    def case_fold(strings_to_fold: list[str], bool_operators: list[str] = BOOL_OPERATORS) -> list[str]:
         """Apply case folding to list of strings"""
         if not boolean:
             return [x.lower() for x in strings_to_fold]
         return [x.lower()  if x not in bool_operators else x for x in strings_to_fold]
 
-    def filter_stop_words(term_list: list[str], language: str, bool_operators:list[str]=BOOL_OPERATORS) -> list[str]:
+    def filter_stop_words(term_list: list[str], language: str, bool_operators: list[str] = BOOL_OPERATORS) -> list[str]:
         """Filter stop words in list of strings"""
         if not boolean:
             return [t for t in term_list if t not in stopwords.words(language)]
         return [t for t in term_list if t not in stopwords.words(language) or t in bool_operators]
 
-    def stem_words(term_list: list[str], language: str,bool_operators:list[str]=BOOL_OPERATORS) -> list[str]:
+    def stem_words(term_list: list[str], language: str, bool_operators: list[str] = BOOL_OPERATORS) -> list[str]:
         """Apply stemming to list of strings"""
         stemmer = SnowballStemmer(language)
         if not boolean:
