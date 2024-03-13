@@ -7,26 +7,25 @@ import {useSuggestStore} from "@/stores/suggestionsStore.js";
 
 const route = useRoute()
 const query = ref({})
-const suggestions = ref([]);
 
 const store = useSearchStore()
-const suggestStore=useSuggestStore()
+const suggestStore = useSuggestStore()
 
 query.value = route.params.query ?? ''
 
 const isInputFocused = ref(false) // Add this line
 const isMouseOverSuggestions = ref(false);
 const onBlur = () => {
-   if (!isMouseOverSuggestions.value) {
-    isInputFocused.value = false;
-  }
+    if (!isMouseOverSuggestions.value) {
+        isInputFocused.value = false;
+    }
 };
 
 const selectSuggestion = (suggestion) => {
-  query.value = suggestion;  
-  search();
-  // Optionally, you might want to clear the suggestions after selection or take other actions
-  //suggestStore.results.value = []; // Clear suggestions if you store them in `results`
+    query.value = suggestion;
+    search();
+    // Optionally, you might want to clear the suggestions after selection or take other actions
+    //suggestStore.results.value = []; // Clear suggestions if you store them in `results`
 };
 
 let search = () => {
@@ -39,9 +38,9 @@ let search = () => {
     }
 }
 
-watch(query, (newValue, oldValue) => {
-        // Fetch new suggestions only if the query actually changes to a non-empty value
-        suggest();
+watch(query, () => {
+    // Fetch new suggestions only if the query actually changes to a non-empty value
+    suggest();
 });
 
 let suggest = () => {
@@ -62,11 +61,14 @@ let suggest = () => {
                    @keydown.enter="search"
                    @focus="isInputFocused = true"
                    @blur="onBlur"
-                   >
-            <ul class="suggestions-list" v-if="isInputFocused" @mouseenter="isMouseOverSuggestions = true"
-            @mouseleave="isMouseOverSuggestions = false">>
-                <li v-for="(suggestion, index) in suggestStore.get_results" :key="index"  class="suggestion-item rounded-lg border w-4/4 h-8" @click="selectSuggestion(suggestion)">
-                    {{ suggestion }}
+            >
+            <ul class="border border-t-0 border-slate-300 dark:border-slate-400 bg-white"
+                v-if="isInputFocused && suggestStore.get_results.length > 0"
+                @mouseenter="isMouseOverSuggestions = true"
+                @mouseleave="isMouseOverSuggestions = false">
+                <li v-for="(suggestion, index) in suggestStore.get_results" :key="index"
+                    class="hover:bg-slate-200 px-2 cursor-pointer" @click="selectSuggestion(suggestion)">
+                    {{suggestion}}
                 </li>
             </ul>
         </div>
@@ -74,31 +76,4 @@ let suggest = () => {
 </template>
 
 
-<style scoped>
-
-.suggestions-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  background-color: white;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-top-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  overflow:hidden;
-  width: 100%; /* Match the input box width */
-}
-
-.suggestion-item {
-  padding: 8px;
-  cursor: pointer;
-  color: #007bff; 
-  #float:left
-}
-
-.suggestion-item:hover {
-  background-color: #f0f0f0; /* Light grey background on hover */
-  
-}
-
-</style>
+<style scoped></style>

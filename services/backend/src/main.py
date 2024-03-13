@@ -123,8 +123,8 @@ async def do_search(query: str, request: Request, page: int = 1):
 
 @app.get("/suggest/")
 async def route_query(query: str, request: Request):
-    suggestions=[weighted_spell_check_query(query)]
-    suggestions.extend(await suggest_query(query, request))
+    suggestions={weighted_spell_check_query(query)}
+    suggestions.update(await suggest_query(query, request))
     return suggestions
 
 
