@@ -50,7 +50,7 @@ def weighted_spell_check_query(query):
 
 
 async def suggest_query(query, request: Request):
-    title_query = f"SELECT title FROM jobs WHERE title LIKE '%{query}%' LIMIT 5;"
+    title_query = f"SELECT title FROM jobs WHERE title LIKE '{query}%' LIMIT 5;"
     response = await request.app.state.db.fetch_rows(title_query)
     words = []
     if response:
