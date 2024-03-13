@@ -42,6 +42,7 @@ def preprocess(
         stop: bool = True,
         stem: bool = True,
         tokenization_regex: str = TOKENIZATION_REGEX,
+
         boolean: bool = False
 ) -> list[str]:
     """
@@ -71,24 +72,24 @@ def preprocess(
         split_string = re.split(regex, string_to_split)
         return [x.lower() for x in split_string if x and x != ' ']
 
-    def case_fold(strings_to_fold: list[str]) -> list[str]:
+    def case_fold(strings_to_fold: list[str], bool_operators:list[str]=BOOL_OPERATORS) -> list[str]:
         """Apply case folding to list of strings"""
         if not boolean:
             return [x.lower() for x in strings_to_fold]
-        return [x.lower() for x in strings_to_fold if x not in BOOL_OPERATORS]
+        return [x.lower() for x in strings_to_fold if x not in bool_operators]
 
-    def filter_stop_words(term_list: list[str], language: str) -> list[str]:
+    def filter_stop_words(term_list: list[str], language: str, bool_operators:list[str]=BOOL_OPERATORS) -> list[str]:
         """Filter stop words in list of strings"""
         if not boolean:
             return [t for t in term_list if t not in stopwords.words(language)]
-        return [t for t in term_list if t not in stopwords.words(language).extend(BOOL_OPERATORS)]
+        return [t for t in term_list if t not in stopwords.words(language).extend(bool_operators)]
 
-    def stem_words(term_list: list[str], language: str) -> list[str]:
+    def stem_words(term_list: list[str], language: str,bool_operators:list[str]=BOOL_OPERATORS) -> list[str]:
         """Apply stemming to list of strings"""
         stemmer = SnowballStemmer(language)
         if not boolean:
             return [stemmer.stem(t) for t in term_list]
-        return [token if token in BOOL_OPERATORS else stemmer.stem(token) for token in term_list]
+        return [token if token in bool_operators else stemmer.stem(token) for token in term_list]
 
     lang = detect_language(text)
     terms = case_fold(tokenize(text, tokenization_regex))
