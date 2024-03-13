@@ -48,7 +48,6 @@ let suggest = () => {
         suggestStore.suggest(query.value)
     }
 }
-
 </script>
 
 <template>
@@ -63,7 +62,7 @@ let suggest = () => {
                    @blur="onBlur"
             >
             <ul class="border border-t-0 border-slate-300 dark:border-slate-400 bg-white"
-                v-if="isInputFocused && suggestStore.get_results.length > 0"
+                v-if="isInputFocused && suggestStore.get_results"
                 @mouseenter="isMouseOverSuggestions = true"
                 @mouseleave="isMouseOverSuggestions = false">
                 <li v-for="(suggestion, index) in suggestStore.get_results" :key="index"

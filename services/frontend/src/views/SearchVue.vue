@@ -14,26 +14,26 @@ const results = computed(() => store.get_results);
 const total_results = computed(() => store.get_total_results)
 
 const downloadResults = () => {
-  // Limiting to the first 15 results
-  const limitedResults = results.value;
+    // Limiting to the first 15 results
+    const limitedResults = results.value;
 
-  // Convert the results to CSV format
-  const csvContent =
-    "JobTitle,Company,Location,JobLink\n" +
-    limitedResults.map(result =>
-      [result.title, result.company, result.location,result.link].map(value => JSON.stringify(value)).join(',')
-    ).join('\n');
+    // Convert the results to CSV format
+    const csvContent =
+        "JobTitle,Company,Location,JobLink\n" +
+        limitedResults.map(result =>
+            [result.title, result.company, result.location, result.link].map(value => JSON.stringify(value)).join(',')
+        ).join('\n');
 
-  // Create a Blob and download link
-  const blob = new Blob([csvContent], { type: 'text/csv' });
-  const resulturl = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = resulturl;
-  a.download = 'search_results.csv';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(resulturl);
+    // Create a Blob and download link
+    const blob = new Blob([csvContent], {type: 'text/csv'});
+    const resulturl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = resulturl;
+    a.download = 'search_results.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(resulturl);
 };
 
 const handleScroll = async () => {
@@ -57,8 +57,6 @@ watch(() => route.params.query, (newQuery) => {
         store.search(newQuery);
     }
 }, {immediate: true});
-
-
 </script>
 
 <template>
