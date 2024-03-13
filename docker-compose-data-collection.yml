@@ -22,7 +22,7 @@ services:
       - '6379:6379'
     command: redis-server --save 60 1 --loglevel warning --requirepass $REDIS_PASSWORD
     volumes:
-      - ./data:/data
+      - redis_data:/data
     depends_on:
       - postgres
 
@@ -43,15 +43,15 @@ services:
       - redis
 
   frontend:
-      restart: always
-      build: ./services/frontend
-      volumes:
-        - './services/frontend:/app'
-        - '/app/node_modules'
-      ports:
-        - 8000:8000
-      depends_on:
-        - backend
+    restart: always
+    build: ./services/frontend
+    volumes:
+      - './services/frontend:/app'
+      - '/app/node_modules'
+    ports:
+      - 8000:8000
+    depends_on:
+      - backend
     
   data_collection:
       env_file:
@@ -63,7 +63,6 @@ services:
       depends_on:
         - redis
   
-  # data collection
-  
 volumes:
   postgres_data:
+  redis_data:
