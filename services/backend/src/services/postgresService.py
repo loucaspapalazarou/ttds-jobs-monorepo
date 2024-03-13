@@ -1,5 +1,5 @@
 import json
-import np
+import numpy as np
 from logging import getLogger
 from datetime import datetime
 
