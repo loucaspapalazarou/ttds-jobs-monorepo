@@ -1,57 +1,33 @@
 <script setup>
-// import {ref} from 'vue'
-// import router from "@/router/index.js";
-// import {useRoute} from 'vue-router';
-// import {useSearchStore} from "@/stores/searchStore.js";
-// import {useSuggestStore} from "@/stores/suggestionsStore.js";
-//
-// const route = useRoute()
-// const query = ref({})
-//
-// // const suggestions = ref([]);
-//
-// const store = useSearchStore()
-// const suggestStore = useSuggestStore()
-//
-// query.value = route.params.query ?? ''
-//
-// const isInputFocused = ref(false) // Add this line
-//
-//
-// let selectSuggestion = (suggestion) => {
-//     query.value = suggestion;
-//     search();
-//     // Optionally, you might want to clear the suggestions after selection or take other actions
-//     //suggestStore.results.value = []; // Clear suggestions if you store them in `results`
-// };
-//
-// let search = () => {
-//     if (query.value != null && query.value !== "") {
-//         router.push({
-//             name: 'search',
-//             params: {query: query.value}
-//         })
-//         store.search(query.value)
-//     }
-// }
-//
-// let suggest = () => {
-//     if (query.value != null && query.value !== "") {
-//         suggestStore.suggest(query.value)
-//     }
-// }
-
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
 import router from "@/router/index.js";
 import {useRoute} from 'vue-router';
 import {useSearchStore} from "@/stores/searchStore.js";
+import {useSuggestStore} from "@/stores/suggestionsStore.js";
 
 const route = useRoute()
 const query = ref({})
+const suggestions = ref([]);
 
 const store = useSearchStore()
+const suggestStore=useSuggestStore()
 
 query.value = route.params.query ?? ''
+
+const isInputFocused = ref(false) // Add this line
+const isMouseOverSuggestions = ref(false);
+const onBlur = () => {
+   if (!isMouseOverSuggestions.value) {
+    isInputFocused.value = false;
+  }
+};
+
+const selectSuggestion = (suggestion) => {
+  query.value = suggestion;  
+  search();
+  // Optionally, you might want to clear the suggestions after selection or take other actions
+  //suggestStore.results.value = []; // Clear suggestions if you store them in `results`
+};
 
 let search = () => {
     if (query.value != null && query.value !== "") {
@@ -60,6 +36,17 @@ let search = () => {
             params: {query: query.value}
         })
         store.search(query.value)
+    }
+}
+
+watch(query, (newValue, oldValue) => {
+        // Fetch new suggestions only if the query actually changes to a non-empty value
+        suggest();
+});
+
+let suggest = () => {
+    if (query.value != null) {
+        suggestStore.suggest(query.value)
     }
 }
 
@@ -73,20 +60,45 @@ let search = () => {
                    class="h-full w-full focus:outline-accent-600 rounded-lg border border-slate-300 p-3"
                    v-model="query"
                    @keydown.enter="search"
-                   @input="suggest"
                    @focus="isInputFocused = true"
-                   @blur="isInputFocused = false"
-            >
-<!--            <ul class="" v-if="isInputFocused">-->
-<!--                <li v-for="(suggestion, index) in suggestStore.get_results" :key="index"-->
-<!--                    class="rounded-lg border w-full h-min-8 p-3 hover:bg-slate-50 dark:hover:bg-slate-600"-->
-<!--                    @click="selectSuggestion(suggestion)">-->
-<!--                    {{suggestion}}-->
-<!--                </li>-->
-<!--            </ul>-->
+                   @blur="onBlur"
+                   >
+            <ul class="suggestions-list" v-if="isInputFocused" @mouseenter="isMouseOverSuggestions = true"
+            @mouseleave="isMouseOverSuggestions = false">>
+                <li v-for="(suggestion, index) in suggestStore.get_results" :key="index"  class="suggestion-item rounded-lg border w-4/4 h-8" @click="selectSuggestion(suggestion)">
+                    {{ suggestion }}
+                </li>
+            </ul>
         </div>
     </div>
 </template>
 
 
-<style scoped></style>
+<style scoped>
+
+.suggestions-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background-color: white;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  overflow:hidden;
+  width: 100%; /* Match the input box width */
+}
+
+.suggestion-item {
+  padding: 8px;
+  cursor: pointer;
+  color: #007bff; 
+  #float:left
+}
+
+.suggestion-item:hover {
+  background-color: #f0f0f0; /* Light grey background on hover */
+  
+}
+
+</style>

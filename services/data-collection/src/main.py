@@ -109,7 +109,7 @@ if __name__ == "__main__":
         )
         while True:
             schedule.run_pending()
-            time.sleep(60)
+            time.sleep(1)
     else:
         logging.info("Running task now.")
         main()

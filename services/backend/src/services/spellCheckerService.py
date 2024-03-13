@@ -3,6 +3,10 @@ from collections import Counter
 from spellchecker import SpellChecker
 from autocorrect import Speller
 from textblob import TextBlob
+from fastapi import Request
+from logging import getLogger
+
+logger = getLogger('uvicorn')
 
 
 def weighted_spell_check_en(term):
@@ -43,3 +47,13 @@ def weighted_spell_check_query(query):
         corrected_term = weighted_spell_check_en(term)
         corrected_query.append(corrected_term)
     return " ".join(corrected_query)
+
+
+async def suggest_query(query, request: Request):
+    title_query = f"SELECT title FROM jobs WHERE title LIKE '%{query}%' LIMIT 5;"
+    response = await request.app.state.db.fetch_rows(title_query)
+    words = []
+    if response:
+        for row in response:
+            words.append(row.get('title').split(',')[0])
+    return words

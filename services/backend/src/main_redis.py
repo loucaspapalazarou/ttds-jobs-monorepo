@@ -601,7 +601,7 @@ def boolean_search(tokens):
                 elif operator == "OR":
                     current_result |= term_postings
                 elif operator == "NOT":
-                    term_postings = DOC_IDS - term_postings
+                    term_postings = set(DOC_IDS) - term_postings
     return list(current_result)
 
 
@@ -653,10 +653,24 @@ def weighted_spell_check_query(query):
         corrected_query.append(corrected_term)
     return " ".join(corrected_query)
 
+def suggest_query(query):
+    # SQL query to fetch the first 5 entries whose title starts with a specific string
+    cursor = connection.cursor()
+    title_query = "SELECT title FROM jobs WHERE title LIKE %s LIMIT 5;"
+    cursor.execute(title_query, (query+'%',))
+    words=[]
+    for row in cursor:
+        words.append(row[0].split(',')[0])
+   
+    # Close the cursor and the connection
+    cursor.close()
+    return words
 
 @app.get("/suggest/")
 async def route_query(query: str):
-    return [weighted_spell_check_query(query)]
+    suggestions=[weighted_spell_check_query(query)]
+    suggestions.extend(suggest_query(query))
+    return suggestions
     # return suggestions
 
 

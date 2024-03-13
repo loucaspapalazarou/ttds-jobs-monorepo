@@ -17,7 +17,7 @@ from .utils.dateparser import parse_date
 from .models.feedbackModel import FeedbackData
 from .services.searchService import search
 from .services.postgresService import get_database_constants
-from .services.spellCheckerService import weighted_spell_check_query
+from .services.spellCheckerService import weighted_spell_check_query, suggest_query
 from .services.feedbackService import save_feedback_to_database
 
 load_dotenv()
@@ -122,8 +122,10 @@ async def do_search(query: str, request: Request, page: int = 1):
 
 
 @app.get("/suggest/")
-async def route_query(query: str):
-    return [weighted_spell_check_query(query)]
+async def route_query(query: str, request: Request):
+    suggestions=[weighted_spell_check_query(query)]
+    suggestions.extend(await suggest_query(query, request))
+    return suggestions
 
 
 @app.post("/submit_feedback/")
