@@ -42,7 +42,6 @@ def preprocess(
         stop: bool = True,
         stem: bool = True,
         tokenization_regex: str = TOKENIZATION_REGEX,
-
         boolean: bool = False
 ) -> list[str]:
     """
