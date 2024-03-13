@@ -29,6 +29,7 @@ def ranked_search(tokens: list[str], n_docs, date_factors: dict) -> list[int]:
 async def search(query, request: Request, page: int = 1, size: int = RESULTS_PAGE_SIZE):
     _offset = (page * size) - size
     # BOOLEAN SEARCH
+    print(query)
     pattern = r'\b(AND|OR|NOT)\b|["#]'
     if re.search(pattern, query):
         doc_ids = boolean_search(query, request.app.state.DOC_IDS)

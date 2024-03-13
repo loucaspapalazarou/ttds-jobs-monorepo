@@ -70,6 +70,7 @@ def boolean_search(tokens, doc_ids) -> list:
     # boolean search
     # Difficulty while separating operators (boolean, proximity)
     for token in tokens:
+        print(token)
         if token in ["AND", "OR", "NOT"]:
             operators.append(token)  # appended to the stack of operators
         elif token == "#":  # next token should be maximum distance of proximity search
@@ -110,5 +111,5 @@ def boolean_search(tokens, doc_ids) -> list:
                 elif operator == "OR":
                     current_result |= term_postings
                 elif operator == "NOT":
-                    term_postings = doc_ids - term_postings
+                    term_postings = set(doc_ids) - term_postings
     return list(current_result)
