@@ -68,20 +68,33 @@ def preprocess(
 
     def tokenize(string_to_split: str, regex: str = TOKENIZATION_REGEX) -> list[str]:
         """Apply tokenization to string"""
+        if not boolean:
+            split_string = re.split(regex, string_to_split)
+            return [x for x in split_string if x and x != ' ']
+        regex = r"(&nbsp;|&lt;|&gt;|&amp;|&quot;|&apos;|&cent;|&pound;|&yen;|&euro;|&copy;|&reg;|&#768;|&#769;|&#770;|&#771;|&#160;|&#60;|&#62;|&#38;|&#162;|&#163;|&#165;|&#8364;|&#169;|&#174;|[^\w\d\"()#])+"
         split_string = re.split(regex, string_to_split)
-        return [x.lower() for x in split_string if x and x != ' ']
+        special_char_pattern = r'(["#()])'
+        tokens=[]
+        for x in split_string:
+            if x and x != ' ':
+                spaced_token = re.sub(special_char_pattern, r' \1 ', x)
+                split_tokens = spaced_token.split()
+                tokens.extend(split_tokens)
+        return tokens
+# Example string to split
+       
 
     def case_fold(strings_to_fold: list[str], bool_operators:list[str]=BOOL_OPERATORS) -> list[str]:
         """Apply case folding to list of strings"""
         if not boolean:
             return [x.lower() for x in strings_to_fold]
-        return [x.lower() for x in strings_to_fold if x not in bool_operators]
+        return [x.lower()  if x not in bool_operators else x for x in strings_to_fold]
 
     def filter_stop_words(term_list: list[str], language: str, bool_operators:list[str]=BOOL_OPERATORS) -> list[str]:
         """Filter stop words in list of strings"""
         if not boolean:
             return [t for t in term_list if t not in stopwords.words(language)]
-        return [t for t in term_list if t not in stopwords.words(language).extend(bool_operators)]
+        return [t for t in term_list if t not in stopwords.words(language) or t in bool_operators]
 
     def stem_words(term_list: list[str], language: str,bool_operators:list[str]=BOOL_OPERATORS) -> list[str]:
         """Apply stemming to list of strings"""
