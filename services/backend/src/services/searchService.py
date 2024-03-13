@@ -31,7 +31,7 @@ async def search(query, request: Request, page: int = 1, size: int = RESULTS_PAG
     # BOOLEAN SEARCH
     pattern = r'\b(AND|OR|NOT)\b|["#]'
     if re.search(pattern, query):
-        doc_ids = boolean_search(_query, request.app.state.DOC_IDS)
+        doc_ids = boolean_search(query, request.app.state.DOC_IDS)
     # RANKED SEARCH
     else:
         # n_docs = await request.app.state.db.fetch_rows('SELECT count(*) as count FROM jobs')
