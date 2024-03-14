@@ -66,7 +66,7 @@ let suggest = () => {
                 @mouseenter="isMouseOverSuggestions = true"
                 @mouseleave="isMouseOverSuggestions = false">
                 <li v-for="(suggestion, index) in suggestStore.get_results" :key="index"
-                    class="hover:bg-slate-200 px-2 cursor-pointer" @click="selectSuggestion(suggestion)">
+                    class="text-blue-900 hover:bg-slate-200 px-2 cursor-pointer" @click="selectSuggestion(suggestion)">
                     {{suggestion}}
                 </li>
             </ul>
@@ -75,4 +75,6 @@ let suggest = () => {
 </template>
 
 
-<style scoped></style>
+<style scoped>
+
+</style>
