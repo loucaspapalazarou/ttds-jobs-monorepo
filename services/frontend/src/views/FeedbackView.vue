@@ -120,6 +120,4 @@ export default {
 .nav-link {
     @apply flex text-slate-400 dark:text-slate-300 hover:underline
 }
-
-
 </style>

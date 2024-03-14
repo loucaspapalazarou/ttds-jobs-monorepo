@@ -15,6 +15,7 @@ query.value = route.params.query ?? ''
 
 const isInputFocused = ref(false) // Add this line
 const isMouseOverSuggestions = ref(false);
+
 const onBlur = () => {
     if (!isMouseOverSuggestions.value) {
         isInputFocused.value = false;
@@ -24,8 +25,6 @@ const onBlur = () => {
 const selectSuggestion = (suggestion) => {
     query.value = suggestion;
     search();
-    // Optionally, you might want to clear the suggestions after selection or take other actions
-    //suggestStore.results.value = []; // Clear suggestions if you store them in `results`
 };
 
 let search = () => {
@@ -38,10 +37,7 @@ let search = () => {
     }
 }
 
-watch(query, () => {
-    // Fetch new suggestions only if the query actually changes to a non-empty value
-    suggest();
-});
+watch(query, () => suggest());
 
 let suggest = () => {
     if (query.value != null) {
@@ -61,7 +57,7 @@ let suggest = () => {
                    @focus="isInputFocused = true"
                    @blur="onBlur"
             >
-            <ul class="border border-t-0 border-slate-300 dark:border-slate-400 bg-white"
+            <ul class="border border-t-0 border-slate-300 dark:border-slate-400 bg-white text-black"
                 v-if="isInputFocused && suggestStore.get_results"
                 @mouseenter="isMouseOverSuggestions = true"
                 @mouseleave="isMouseOverSuggestions = false">
@@ -73,6 +69,5 @@ let suggest = () => {
         </div>
     </div>
 </template>
-
 
 <style scoped></style>
