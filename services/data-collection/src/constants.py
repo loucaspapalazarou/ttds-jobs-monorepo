@@ -15,5 +15,5 @@ CONSTANTS = {
     "decode_responses": True,
     "scrape_duration": 14_400,  # 14,400 seconds = 4 hours
     "scrape_time": "00:00",
-    "deletion_interval": "20 days",
+    "deletion_interval": "40 days",
 }
