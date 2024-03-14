@@ -35,7 +35,17 @@ async def search(query, request: Request, page: int = 1, size: int = RESULTS_PAG
     results = await request.app.state.db.fetch_rows(
         f"""
         SELECT json_agg(js ORDER BY js.idx) FROM (
-            SELECT j.*, x.idx
+            SELECT 
+               j.id,
+               j.job_id,
+               j.link,
+               j.title,
+               j.company,
+               j.date_posted,
+               j.location,
+               substr(j.description, 1, 500) || '...' as description,
+               j.timestamp,
+             x.idx
             FROM unnest(ARRAY[{",".join([str(d) for d in doc_ids[_offset:_offset + size]])}]::int[]) 
                 WITH ORDINALITY AS x(id, idx)
             JOIN jobs j ON j.id = x.id

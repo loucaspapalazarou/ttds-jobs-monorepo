@@ -2,13 +2,11 @@
 import {ref, watch} from 'vue'
 import router from "@/router/index.js";
 import {useRoute} from 'vue-router';
-import {useSearchStore} from "@/stores/searchStore.js";
 import {useSuggestStore} from "@/stores/suggestionsStore.js";
 
 const route = useRoute()
 const query = ref({})
 
-const store = useSearchStore()
 const suggestStore = useSuggestStore()
 
 query.value = route.params.query ?? ''
@@ -33,7 +31,6 @@ let search = () => {
             name: 'search',
             params: {query: query.value}
         })
-        store.search(query.value)
     }
 }
 
