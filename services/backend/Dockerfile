@@ -1,6 +1,6 @@
 FROM python:3.9-slim-buster
 
-LABEL version=0.2.2
+LABEL version=1
 
 ENV PYTHONUNBUFFERED True
 

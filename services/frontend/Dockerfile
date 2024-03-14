@@ -1,15 +1,21 @@
-FROM node:lts-alpine
+FROM node:18-alpine
 
-LABEL version=0.1.0
+LABEL version=1.0.0
+
+ARG SEARCH_API_URL
 
 WORKDIR /app
 
-ENV PATH /app/node_modules/.bin:$PATH
-
-#RUN npm install @vue/cli@5.0.8 -g
-
 COPY package.json .
-COPY package-lock.json .
+
 RUN npm install
 
-CMD ["npm", "run", "dev"]
+RUN echo "VITE_SEARCH_API_URL=${SEARCH_API_URL}" > .env
+
+COPY . .
+
+RUN npm run build
+
+EXPOSE ${PORT}
+
+CMD [ "npm", "run", "preview" ]
