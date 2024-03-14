@@ -11,7 +11,8 @@ const route = useRoute();
 
 const store = useSearchStore();
 const results = computed(() => store.get_results);
-const total_results = computed(() => store.get_total_results)
+const total_results = computed(() => store.get_total_results);
+const error = computed(() => store.get_error);
 
 const downloadResults = () => {
     // Limiting to the first 15 results
@@ -98,9 +99,21 @@ watch(() => route.params.query, (newQuery) => {
                 <p class="italic text-slate-400 dark:text-slate-400">Found {{total_results}} results</p>
             </div>
         </div>
+        <div v-if="error" class="flex w-full py-5 justify-center items-center">
+            <div class="flex flex-col w-full max-w-full px-6 md:px-2 md:w-10/12 md:gap-3 md:max-w-10/12 text-start text-slate-600 dark:text-slate-400">
+                <p v-if="error.status === 404">
+                    {{error.message}}
+                    <i class="text-accent-600 dark:text-accent-400">{{error.query}}</i>
+                </p>
+                <p v-else>
+                    {{error.message}}
+                    <i class="text-accent-600 dark:text-accent-400">{{error.query}}</i>
+                </p>
+            </div>
+        </div>
         <div class="flex grow justify-center mb-12 w-full max-w-full">
             <!-- Your search results display -->
-            <ul class="flex flex-col md:w-10/12 md:gap-3 w-full max-w-full">
+            <ul class="flex flex-col w-full max-w-full md:w-10/12 md:gap-3 md:max-w-10/12">
                 <li v-for="result in results" :key="result.id">
                     <a :href="result.link" target="_blank" rel="noopener noreferrer">
                         <search-result
