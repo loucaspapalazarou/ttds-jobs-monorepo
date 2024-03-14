@@ -98,10 +98,19 @@ async def do_search(query: str, request: Request, page: int = 1):
             'data': {
                 "query": query,
                 "results": json.loads(results[0].get('json_agg')) if total_results > (
-                            page * RESULTS_PAGE_SIZE) - RESULTS_PAGE_SIZE else [],
+                        page * RESULTS_PAGE_SIZE) - RESULTS_PAGE_SIZE else [],
                 "total_results": total_results
             }
         }
+    except IOError as e:
+        raise HTTPException(status_code=400, detail={
+            'data': {
+                'query': query,
+                'message': 'Invalid boolean query. '
+                           'Please verify all your terms are separated by boolean operators or contained in '
+                           'phases or proximity queries.'
+            }
+        })
     except Exception as e:  # General / Unknown error
         logger.exception(e)
         if response:
@@ -109,7 +118,7 @@ async def do_search(query: str, request: Request, page: int = 1):
         else:
             raise HTTPException(status_code=500, detail={
                 'query': query,
-                'message': f'Internal server error.'
+                'message': 'Internal server error.'
             })
 
     if total_results > 0:

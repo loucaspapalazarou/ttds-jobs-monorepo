@@ -11,7 +11,8 @@ const route = useRoute();
 
 const store = useSearchStore();
 const results = computed(() => store.get_results);
-const total_results = computed(() => store.get_total_results)
+const total_results = computed(() => store.get_total_results);
+const error = computed(() => store.get_error);
 
 const downloadResults = () => {
     // Limiting to the first 15 results
@@ -60,10 +61,10 @@ watch(() => route.params.query, (newQuery) => {
 </script>
 
 <template>
-    <div class="flex flex-col gap-3 w-full mt-5">
+    <div class="flex flex-col w-full max-w-full my-3">
         <!-- Download button at the top -->
         <div class="flex justify-center w-full">
-            <div class="flex w-10/12 justify-end gap-5">
+            <div class="flex w-full justify-center items-center px-3 py-3 md:w-10/12 md:justify-end md:px-0 md:pb-3 md:gap-5">
                 <router-link to="/" class="nav-link" title="Go to HomePage">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                          stroke="currentColor" class="w-5 h-5 mr-1.5">
@@ -86,22 +87,36 @@ watch(() => route.params.query, (newQuery) => {
                         <path stroke-linecap="round" stroke-linejoin="round"
                               d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/>
                     </svg>
-
                     Feedback
                 </router-link>
             </div>
         </div>
-        <div class="min-h-32 pt-0 flex border-b border-slate-100 dark:border-slate-600">
+        <div class="pt-2 pb-5 flex border-b border-slate-100 dark:border-slate-600 w-full mt-7">
             <search-bar></search-bar>
         </div>
-        <div v-if="results" class="flex justify-center">
-            <div class="flex w-10/12 px-3 justify-end">
-                <p class="italic text-slate-400 dark:text-slate-300">Found {{total_results}} results</p>
+        <div v-if="results" class="flex justify-center w-full">
+            <div class="flex md:w-10/12 pt-3 md:pb-3 px-7 md:px-2 justify-end text-sm w-full">
+                <p class="italic text-slate-400 dark:text-slate-400">Found {{total_results}} results</p>
             </div>
         </div>
-        <div class="flex grow justify-center mb-12">
+        <div v-if="error" class="flex w-full py-5 justify-center items-center">
+            <div class="flex flex-col w-full max-w-full px-6 md:px-2 md:w-10/12 md:gap-3 md:max-w-10/12 text-start text-slate-600 dark:text-slate-400">
+                <i v-if="error.status === 400">
+                    {{error.message}}
+                </i>
+                <i v-else-if="error.status === 404">
+                    {{error.message}}
+                    <i class="text-accent-600 dark:text-accent-400">{{error.query}}</i>
+                </i>
+                <i v-else>
+                    {{error.message}}
+                    <i class="text-accent-600 dark:text-accent-400">{{error.query}}</i>
+                </i>
+            </div>
+        </div>
+        <div class="flex grow justify-center mb-12 w-full max-w-full">
             <!-- Your search results display -->
-            <ul class="flex flex-col w-10/12 px-3 divide-y-2 divide-slate-200 dark:divide-slate-600">
+            <ul class="flex flex-col w-full max-w-full md:w-10/12 md:gap-3 md:max-w-10/12">
                 <li v-for="result in results" :key="result.id">
                     <a :href="result.link" target="_blank" rel="noopener noreferrer">
                         <search-result
@@ -129,6 +144,6 @@ watch(() => route.params.query, (newQuery) => {
 
 <style scoped>
 .nav-link {
-    @apply flex text-slate-400 dark:text-slate-300 hover:underline
+    @apply flex flex-auto md:flex-none text-slate-400 dark:text-slate-300 hover:underline justify-center items-center
 }
 </style>

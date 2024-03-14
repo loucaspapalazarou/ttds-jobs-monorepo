@@ -47,9 +47,9 @@ let suggest = () => {
 </script>
 
 <template>
-    <div class="grow flex flex-col items-center justify-center text-left pb-14">
-        <div class="h-12 w-10/12 relative mt-10">
-            <p class="absolute -top-3/4 text-left text-lg">Search Jobs:</p>
+    <div class="grow flex flex-col items-center justify-center text-left">
+        <div class="h-12 w-full px-5 md:w-10/12 md:px-0 relative">
+            <p class="absolute -top-2/3 md:-top-3/4 text-left text-base md:text-lg pl-1">Search Jobs:</p>
             <input type="text"
                    class="h-full w-full focus:outline-accent-600 rounded-lg border border-slate-300 p-3"
                    v-model="query"
@@ -57,7 +57,7 @@ let suggest = () => {
                    @focus="isInputFocused = true"
                    @blur="onBlur"
             >
-            <ul class="border border-t-0 border-slate-300 dark:border-slate-400 bg-white text-black"
+            <ul class="border border-t-0 border-slate-300 dark:border-slate-400 bg-white text-black z-50"
                 v-if="isInputFocused && suggestStore.get_results"
                 @mouseenter="isMouseOverSuggestions = true"
                 @mouseleave="isMouseOverSuggestions = false">
