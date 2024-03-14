@@ -19,7 +19,7 @@ def perform_phrase_search(query):
     final_doc_ids = set()
     if len(postings) > 1:
         for doc_id in common_doc_ids:
-            positions = set([np.array(posting[doc_id].split(","), dtype=int) for posting in postings])
+            positions = set([list(np.array(posting[doc_id].split(","), dtype=int)) for posting in postings])
             combinations = list(
                 product(*positions))  # calculate all combinations of positions of different tokens in a doc
             for combination in combinations:
@@ -42,7 +42,7 @@ def perform_proximity_search(tokens, proximity_distance):
     final_doc_ids = set()
     if len(postings) > 1:
         for doc_id in common_doc_ids:
-            positions = set([np.array(posting[doc_id].split(","), dtype=int) for posting in postings])
+            positions = set([list(np.array(posting[doc_id].split(","), dtype=int)) for posting in postings])
             combinations = list(
                 product(*positions))  # calculate all combinations of positions of different tokens in a doc
             for combination in combinations:
