@@ -4,15 +4,15 @@
 
 ---
 
-See the [final report]() (**TODO**: add link to report or embed pdf)
+See the [final report](#) (**TODO:** Link to report or embedded PDF)
 
-The entire codebase for the project is structured as a monolith in this repository. We implemented 3 distinct services.
+The entire codebase for the project is structured as a monolith in this repository. We implemented 3 distinct services:
 
 - `frontend`
 - `backend`
-- `data-colection`
+- `data-collection`
 
-All the services are placed in the `services` directory, each with their own documentation.
+All the services are placed in the `services/` directory, each with their own documentation. A module for index processing is also present. In addition to the custom services, the system utilizes PostgreSQL for data storage, and Redis as a caching mechanism for the inverted index.
 
 Start the system:
 ```
