@@ -67,7 +67,6 @@ def boolean_search(tokens, doc_ids) -> list:
     distance = 0
     proximity = False
     hashtag = False
-    print(tokens)
     # boolean search
     # Difficulty while separating operators (boolean, proximity)
     for token in tokens:
@@ -75,7 +74,6 @@ def boolean_search(tokens, doc_ids) -> list:
             operators.append(token)  # appended to the stack of operators
         elif token == "#":  # next token should be maximum distance of proximity search
             hashtag = True
-            print("Hashtag found")
         elif token == "(":
             proximity = True  # next tokens should be added to a list and perform proximity search over that list
         elif token == ")":  # proximity search should be performed
@@ -90,7 +88,6 @@ def boolean_search(tokens, doc_ids) -> list:
                 word_for_phrase.clear()
                 phrase = False
         elif phrase or proximity:
-            print("Adding word "+ token)
             word_for_phrase.append(token)  # if phrase or proximity search is being activated the words are added to
             # the list until the end is detected
         elif hashtag:
