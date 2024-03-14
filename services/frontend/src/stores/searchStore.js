@@ -39,6 +39,11 @@ export const useSearchStore = defineStore(
                 query: query.value
             }
             switch (response.status) {
+                case 400:
+                    error.value.message = `Invalid boolean query. ` +
+                        'Please verify all your terms are separated by boolean operators or contained in ' +
+                        'phases or proximity queries.'
+                    break;
                 case 404:
                     error.value.message = `Sorry, no results were found for the query`
                     break;

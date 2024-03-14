@@ -101,14 +101,17 @@ watch(() => route.params.query, (newQuery) => {
         </div>
         <div v-if="error" class="flex w-full py-5 justify-center items-center">
             <div class="flex flex-col w-full max-w-full px-6 md:px-2 md:w-10/12 md:gap-3 md:max-w-10/12 text-start text-slate-600 dark:text-slate-400">
-                <p v-if="error.status === 404">
+                <i v-if="error.status === 400">
+                    {{error.message}}
+                </i>
+                <i v-else-if="error.status === 404">
                     {{error.message}}
                     <i class="text-accent-600 dark:text-accent-400">{{error.query}}</i>
-                </p>
-                <p v-else>
+                </i>
+                <i v-else>
                     {{error.message}}
                     <i class="text-accent-600 dark:text-accent-400">{{error.query}}</i>
-                </p>
+                </i>
             </div>
         </div>
         <div class="flex grow justify-center mb-12 w-full max-w-full">
