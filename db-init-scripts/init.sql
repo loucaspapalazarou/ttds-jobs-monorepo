@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     timestamp TIMESTAMP DEFAULT current_timestamp
 );
 
-CREATE TABLE feedback (
+CREATE TABLE feedback IF NOT EXISTS jobs(
     id SERIAL PRIMARY KEY,
     rating INT NOT NULL,
     feedback TEXT NOT NULL,
