@@ -23,7 +23,7 @@ stemmed_languages = ["arabic", "danish", "dutch", "english", "finnish", "french"
 NOT = 'NOT'
 AND = 'AND'
 OR = 'OR'
-BOOL_OPERATORS = (NOT, AND, OR)
+BOOL_OPERATORS = NOT, AND, OR
 
 SEPARATOR = ' % '
 
@@ -71,18 +71,15 @@ def preprocess(
         if not boolean:
             split_string = re.split(regex, string_to_split)
             return [x for x in split_string if x and x != ' ']
-        regex = r"(&nbsp;|&lt;|&gt;|&amp;|&quot;|&apos;|&cent;|&pound;|&yen;|&euro;|&copy;|&reg;|&#768;|&#769;|&#770;|&#771;|&#160;|&#60;|&#62;|&#38;|&#162;|&#163;|&#165;|&#8364;|&#169;|&#174;|[^\w\d\"()#])+"
         split_string = re.split(regex, string_to_split)
         special_char_pattern = r'(["#()])'
-        tokens=[]
+        tokens = []
         for x in split_string:
             if x and x != ' ':
                 spaced_token = re.sub(special_char_pattern, r' \1 ', x)
                 split_tokens = spaced_token.split()
                 tokens.extend(split_tokens)
         return tokens
-# Example string to split
-       
 
     def case_fold(strings_to_fold: list[str], bool_operators: list[str] = BOOL_OPERATORS) -> list[str]:
         """Apply case folding to list of strings"""

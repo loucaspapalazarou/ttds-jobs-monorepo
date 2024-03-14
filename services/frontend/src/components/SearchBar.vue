@@ -61,7 +61,7 @@ let suggest = () => {
                    @focus="isInputFocused = true"
                    @blur="onBlur"
             >
-            <ul class="border border-t-0 border-slate-300 dark:border-slate-400 bg-white"
+            <ul class="border border-t-0 border-slate-300 dark:border-slate-400 bg-white text-black"
                 v-if="isInputFocused && suggestStore.get_results"
                 @mouseenter="isMouseOverSuggestions = true"
                 @mouseleave="isMouseOverSuggestions = false">

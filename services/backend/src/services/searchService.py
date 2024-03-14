@@ -1,15 +1,12 @@
 import re
 
 from numpy import log10
-from logging import getLogger
 from fastapi import Request
 
-from ..utils.preprocessing import preprocess, BOOL_OPERATORS
+from ..utils.preprocessing import preprocess
 from ..utils.constants import RESULTS_PAGE_SIZE
 from .redisService import get_index
 from .booleanSearchService import boolean_search
-
-logger = getLogger('uvicorn')
 
 
 def ranked_search(tokens: list[str], n_docs, date_factors: dict) -> list[int]:
@@ -28,16 +25,22 @@ def ranked_search(tokens: list[str], n_docs, date_factors: dict) -> list[int]:
 
 async def search(query, request: Request, page: int = 1, size: int = RESULTS_PAGE_SIZE):
     _offset = (page * size) - size
-    # BOOLEAN SEARCH
     pattern = r'\b(AND|OR|NOT)\b|["#]'
-    if re.search(pattern, query):
+
+    if re.search(pattern, query):   # BOOLEAN SEARCH
         doc_ids = boolean_search(query, request.app.state.DOC_IDS)
-    # RANKED SEARCH
-    else:
-        # n_docs = await request.app.state.db.fetch_rows('SELECT count(*) as count FROM jobs')
-        _query=preprocess(query)
-        doc_ids = ranked_search(_query, request.app.state.N, request.app.state.ID2DATE)
+    else:   # RANKED SEARCH
+        doc_ids = ranked_search(preprocess(query), request.app.state.N, request.app.state.ID2DATE)
+
     results = await request.app.state.db.fetch_rows(
-        f'SELECT * FROM jobs WHERE id in ({",".join([str(d) for d in doc_ids[_offset:_offset + size]])})'
+        f"""
+        SELECT json_agg(js ORDER BY js.idx) FROM (
+            SELECT j.*, x.idx
+            FROM unnest(ARRAY[{",".join([str(d) for d in doc_ids[_offset:_offset + size]])}]::int[]) 
+                WITH ORDINALITY AS x(id, idx)
+            JOIN jobs j ON j.id = x.id
+        ) AS js;
+        """
     )
+
     return results, len(doc_ids)

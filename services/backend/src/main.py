@@ -3,6 +3,7 @@ import nltk
 import uvicorn
 import schedule
 import logging
+import json
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -88,7 +89,6 @@ def expand_query(query):
 
 @app.get("/search/")
 async def do_search(query: str, request: Request, page: int = 1):
-    _start_time = time.time()
     if page < 1:
         raise HTTPException(status_code=400, detail='Page value must be equal or greater than 1.')
     response = None
@@ -97,8 +97,8 @@ async def do_search(query: str, request: Request, page: int = 1):
         response = {
             'data': {
                 "query": query,
-                "results": [{k: v for k, v in x.items()} for x in
-                            results] if total_results > (page * RESULTS_PAGE_SIZE) - RESULTS_PAGE_SIZE else [],
+                "results": json.loads(results[0].get('json_agg')) if total_results > (
+                            page * RESULTS_PAGE_SIZE) - RESULTS_PAGE_SIZE else [],
                 "total_results": total_results
             }
         }
@@ -123,7 +123,7 @@ async def do_search(query: str, request: Request, page: int = 1):
 
 @app.get("/suggest/")
 async def route_query(query: str, request: Request):
-    suggestions={weighted_spell_check_query(query)}
+    suggestions = {weighted_spell_check_query(query)}
     suggestions.update(await suggest_query(query, request))
     return suggestions
 
