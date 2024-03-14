@@ -1,6 +1,6 @@
 FROM python:3.9-slim-buster
 
-LABEL version=0.2.2
+LABEL version=1
 
 ENV PYTHONUNBUFFERED True
 
@@ -21,7 +21,6 @@ COPY services/backend/requirements.txt .
 RUN pip3 install --upgrade pip
 RUN pip3 install -r ./requirements.txt
 
-COPY services/backend/src/ .
-COPY services/utils/ utils/
+COPY services/backend/src/ ./backend
 
-CMD exec uvicorn main_redis:app --host 0.0.0.0 --port ${PORT}
+CMD exec uvicorn backend.main:app --host 0.0.0.0 --port ${PORT}

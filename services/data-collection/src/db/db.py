@@ -79,8 +79,11 @@ def insert(data_tuple):
         """
     try:
         cur.execute(insert_statement, data_tuple)
+        res = cur.fetchone()
+        if res is None:
+            return
+        job_id = res[0]
         connection.commit()
-        job_id = cur.fetchone()[0]
         logging.debug(job_id)
         return job_id
     except Exception as e:
