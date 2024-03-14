@@ -67,6 +67,7 @@ def boolean_search(tokens, doc_ids) -> list:
     distance = 0
     proximity = False
     hashtag = False
+    initial_done=False
     # boolean search
     # Difficulty while separating operators (boolean, proximity)
     for token in tokens:
@@ -101,7 +102,10 @@ def boolean_search(tokens, doc_ids) -> list:
             else:
                 term_postings = set()
             if len(operators) == 0:
+                if initial_done:
+                    raise IOError
                 current_result &= term_postings  # This is made for the first word
+                initial_done=True
             while len(operators) > 0:
                 operator = operators.pop()
                 # perform operations in order of popping
