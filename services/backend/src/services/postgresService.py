@@ -1,5 +1,5 @@
 import json
-
+import numpy as np
 from logging import getLogger
 from datetime import datetime
 
@@ -15,7 +15,8 @@ async def get_database_constants(db: Database, dates_cache: dict) -> (int, list,
     docs_and_dates = await db.fetch_rows('SELECT json_object_agg(ID, date_posted) as data FROM jobs;')
 
     id2date = json.loads(docs_and_dates[0].get('data'))
-    doc_ids = list(id2date.keys())
+
+    doc_ids = list(np.array(list(id2date.keys()), dtype=int))
 
     current_time = datetime.now()
     for key, value in id2date.items():
