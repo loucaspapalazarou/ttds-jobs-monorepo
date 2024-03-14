@@ -42,15 +42,15 @@ services:
       - redis
 
   frontend:
-      restart: always
-      build: ./services/frontend
-      volumes:
-        - './services/frontend:/app'
-        - '/app/node_modules'
-      ports:
-        - 8000:8000
-      depends_on:
-        - backend
+    restart: always
+    build: ./services/frontend
+    volumes:
+      - './services/frontend:/app'
+      - '/app/node_modules'
+    ports:
+      - 8000:8000
+    depends_on:
+      - backend
     
   data_collection:
       env_file:
@@ -61,8 +61,6 @@ services:
         dockerfile: Dockerfile.data_collection
       depends_on:
         - redis
-  
-  # data collection
   
 volumes:
   postgres_data:
