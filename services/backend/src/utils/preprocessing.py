@@ -71,6 +71,7 @@ def preprocess(
         if not boolean:
             split_string = re.split(regex, string_to_split)
             return [x for x in split_string if x and x != ' ']
+        regex = r"(&nbsp;|&lt;|&gt;|&amp;|&quot;|&apos;|&cent;|&pound;|&yen;|&euro;|&copy;|&reg;|&#768;|&#769;|&#770;|&#771;|&#160;|&#60;|&#62;|&#38;|&#162;|&#163;|&#165;|&#8364;|&#169;|&#174;|[^\w\d\"()#])+"
         split_string = re.split(regex, string_to_split)
         special_char_pattern = r'(["#()])'
         tokens = []
