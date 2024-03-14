@@ -38,7 +38,7 @@ def perform_proximity_search(tokens, proximity_distance):
     postings = list(get_index(tokens).values())
     # Display Result
     common_doc_ids = set.intersection(
-        *(list(posting.keys()) for posting in postings))  # perform intersection to get common docs
+        *(set(posting.keys()) for posting in postings))  # perform intersection to get common docs
     final_doc_ids = set()
     if len(postings) > 1:
         for doc_id in common_doc_ids:
