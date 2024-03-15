@@ -3,8 +3,7 @@
 *Repository for the final assignment of* ***Text Technologies for Data Science*** *at The University of Edinburgh*
 
 ---
-
-See the [final report](#) (**TODO:** Link to report or embedded PDF)
+See the [final report](Group_ID_04.pdf)
 
 The entire codebase for the project is structured as a monolith in this repository. We implemented 3 distinct services:
 
