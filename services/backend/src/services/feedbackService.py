@@ -4,15 +4,15 @@ from ..models.feedbackModel import FeedbackData
 
 
 async def save_feedback_to_database(feedback_data: FeedbackData, request: Request):
-    # insert_statement = (
-    #     f"INSERT INTO feedback (rating, feedback, email, date) "
-    #     f"VALUES ({feedback_data.rating}, {feedback_data.feedback}, "
-    #     f"{feedback_data.email}, {feedback_data.date});"
-    # )
     insert_statement = (
-        f"INSERT INTO feedback (rating, feedback, date) "
-        f"VALUES ({feedback_data.rating}, {feedback_data.feedback}, {feedback_data.date});"
+        "INSERT INTO feedback (rating, feedback, email) " "VALUES ($1, $2, $3)"
     )
 
-    await request.app.state.db.fetch_rows(insert_statement)
+    data_tuple = (
+        feedback_data.rating,
+        feedback_data.feedback,
+        feedback_data.email,
+    )
+
+    await request.app.state.db.insert_feedback(insert_statement, data_tuple)
     return
