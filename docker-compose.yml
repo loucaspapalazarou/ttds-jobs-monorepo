@@ -45,7 +45,7 @@ services:
       - .env
     build: ./services/frontend
     ports:
-      - 8000:8000
+      - 8000:8080
     depends_on:
       - backend
     links:
