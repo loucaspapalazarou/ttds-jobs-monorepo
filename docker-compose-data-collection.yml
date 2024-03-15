@@ -35,32 +35,31 @@ services:
       dockerfile: ./services/backend/Dockerfile
     ports:
       - 5001:5001
-    volumes:
-      - ./services/backend/src:/app
-    command: uvicorn main_redis:app --reload --host 0.0.0.0 --port 5001
+    command: uvicorn backend.main:app --reload --host 0.0.0.0 --port 5001
     depends_on:
       - redis
 
   frontend:
     restart: always
+    env_file:
+      - .env
     build: ./services/frontend
-    volumes:
-      - './services/frontend:/app'
-      - '/app/node_modules'
     ports:
       - 8000:8080
     depends_on:
       - backend
-    
+    links:
+      - backend
+
   data_collection:
-      env_file:
-        - .env
-      restart: always
-      build:
-        context: ./services/data-collection
-        dockerfile: Dockerfile.data_collection
-      depends_on:
-        - redis
-  
+    env_file:
+      - .env
+    restart: always
+    build:
+      - context: ./services/data-collection
+      - dockerfile: Dockerfile.data_collection
+    depends_on:
+      - postgres
+
 volumes:
   postgres_data:

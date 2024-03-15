@@ -58,8 +58,6 @@ services:
     build: ./services/data-collection
     depends_on:
       - postgres
-  
-  # data collection
-
+      
 volumes:
   postgres_data:
