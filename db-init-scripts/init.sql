@@ -14,6 +14,5 @@ CREATE TABLE IF NOT EXISTS feedback (
     id SERIAL PRIMARY KEY,
     rating INT NOT NULL,
     feedback TEXT NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    date TIMESTAMP NOT NULL
+    date TIMESTAMP DEFAULT current_timestamp
 );
