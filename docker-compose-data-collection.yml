@@ -56,8 +56,8 @@ services:
       - .env
     restart: always
     build:
-      - context: ./services/data-collection
-      - dockerfile: Dockerfile.data_collection
+      context: ./services/data-collection
+      dockerfile: Dockerfile.data_collection
     depends_on:
       - postgres
 
